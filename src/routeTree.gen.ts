@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ExplorarZonasRouteImport } from './routes/explorar-zonas'
 import { Route as CatalogoRouteImport } from './routes/catalogo'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PropiedadIdRouteImport } from './routes/propiedad.$id'
 
+const ExplorarZonasRoute = ExplorarZonasRouteImport.update({
+  id: '/explorar-zonas',
+  path: '/explorar-zonas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CatalogoRoute = CatalogoRouteImport.update({
   id: '/catalogo',
   path: '/catalogo',
@@ -32,35 +38,46 @@ const PropiedadIdRoute = PropiedadIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/catalogo': typeof CatalogoRoute
+  '/explorar-zonas': typeof ExplorarZonasRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/catalogo': typeof CatalogoRoute
+  '/explorar-zonas': typeof ExplorarZonasRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/catalogo': typeof CatalogoRoute
+  '/explorar-zonas': typeof ExplorarZonasRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/catalogo' | '/propiedad/$id'
+  fullPaths: '/' | '/catalogo' | '/explorar-zonas' | '/propiedad/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/catalogo' | '/propiedad/$id'
-  id: '__root__' | '/' | '/catalogo' | '/propiedad/$id'
+  to: '/' | '/catalogo' | '/explorar-zonas' | '/propiedad/$id'
+  id: '__root__' | '/' | '/catalogo' | '/explorar-zonas' | '/propiedad/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CatalogoRoute: typeof CatalogoRoute
+  ExplorarZonasRoute: typeof ExplorarZonasRoute
   PropiedadIdRoute: typeof PropiedadIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/explorar-zonas': {
+      id: '/explorar-zonas'
+      path: '/explorar-zonas'
+      fullPath: '/explorar-zonas'
+      preLoaderRoute: typeof ExplorarZonasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/catalogo': {
       id: '/catalogo'
       path: '/catalogo'
@@ -88,8 +105,19 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CatalogoRoute: CatalogoRoute,
+  ExplorarZonasRoute: ExplorarZonasRoute,
   PropiedadIdRoute: PropiedadIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
