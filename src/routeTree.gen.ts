@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as CatalogoRouteImport } from './routes/catalogo'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PropiedadIdRouteImport } from './routes/propiedad.$id'
 
 const CatalogoRoute = CatalogoRouteImport.update({
   id: '/catalogo',
@@ -22,31 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PropiedadIdRoute = PropiedadIdRouteImport.update({
+  id: '/propiedad/$id',
+  path: '/propiedad/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/catalogo': typeof CatalogoRoute
+  '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/catalogo': typeof CatalogoRoute
+  '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/catalogo': typeof CatalogoRoute
+  '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/catalogo'
+  fullPaths: '/' | '/catalogo' | '/propiedad/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/catalogo'
-  id: '__root__' | '/' | '/catalogo'
+  to: '/' | '/catalogo' | '/propiedad/$id'
+  id: '__root__' | '/' | '/catalogo' | '/propiedad/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CatalogoRoute: typeof CatalogoRoute
+  PropiedadIdRoute: typeof PropiedadIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,13 +75,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/propiedad/$id': {
+      id: '/propiedad/$id'
+      path: '/propiedad/$id'
+      fullPath: '/propiedad/$id'
+      preLoaderRoute: typeof PropiedadIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CatalogoRoute: CatalogoRoute,
+  PropiedadIdRoute: PropiedadIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
