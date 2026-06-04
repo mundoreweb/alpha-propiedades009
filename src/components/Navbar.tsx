@@ -6,7 +6,7 @@ const navItems: Array<{ label: string; to: string; search?: Record<string, strin
   { label: "Inicio", to: "/" },
   { label: "Comprar", to: "/catalogo", search: { modo: "venta", provincia: "Todas" } },
   { label: "Alquilar", to: "/catalogo", search: { modo: "alquiler", provincia: "Todas" } },
-  { label: "Proyectos", to: "/catalogo", search: { modo: "todas", provincia: "Todas" } },
+  { label: "Explorar Zonas", to: "/explorar-zonas" },
   { label: "Nosotros", to: "/" },
 ];
 
@@ -43,9 +43,12 @@ export function Navbar() {
           <button className="flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" aria-label="Favoritos">
             <Heart className="h-4.5 w-4.5" />
           </button>
-          <button className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[var(--shadow-soft)]">
+          <Link
+            to="/admin"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[var(--shadow-soft)]"
+          >
             Publicar
-          </button>
+          </Link>
         </div>
 
         <button
@@ -71,9 +74,13 @@ export function Navbar() {
                 {item.label}
               </Link>
             ))}
-            <button className="mt-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">
+            <Link
+              to="/admin"
+              onClick={() => setOpen(false)}
+              className="mt-2 rounded-full bg-primary px-5 py-2.5 text-center text-sm font-semibold text-primary-foreground"
+            >
               Publicar
-            </button>
+            </Link>
           </nav>
         </div>
       )}
