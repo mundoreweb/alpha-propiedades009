@@ -64,6 +64,7 @@ export function Navbar() {
               <Link
                 key={item.label}
                 to={item.to}
+                search={item.search as never}
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
               >
