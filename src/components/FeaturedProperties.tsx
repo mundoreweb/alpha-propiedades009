@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { PropertyCard, type Property } from "./PropertyCard";
 import p1 from "@/assets/property-1.jpg";
 import p2 from "@/assets/property-2.jpg";
