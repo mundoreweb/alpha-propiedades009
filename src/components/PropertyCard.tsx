@@ -1,4 +1,5 @@
 import { Heart, BedDouble, Bath, Maximize2, MapPin } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export type Property = {
   id: string;
@@ -75,9 +76,13 @@ export function PropertyCard({ property }: { property: Property }) {
               )}
             </div>
           </div>
-          <button className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+          <Link
+            to="/propiedad/$id"
+            params={{ id: property.id }}
+            className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
             Ver más
-          </button>
+          </Link>
         </div>
       </div>
     </article>
