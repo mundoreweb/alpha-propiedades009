@@ -19,6 +19,17 @@ type Modo = "venta" | "alquiler";
 export function HeroSearch() {
   const [modo, setModo] = useState<Modo>("venta");
   const [provincia, setProvincia] = useState(provincias[0]);
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    navigate({
+      to: "/catalogo",
+      search: {
+        modo,
+        provincia: provincia === "Todas las provincias" ? "Todas" : provincia,
+      },
+    });
+  };
 
   return (
     <section className="relative isolate overflow-hidden">
