@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { Search, MapPin } from "lucide-react";
 import heroImage from "@/assets/hero-villa.jpg";
 
