@@ -43,9 +43,12 @@ export function Navbar() {
           <button className="flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" aria-label="Favoritos">
             <Heart className="h-4.5 w-4.5" />
           </button>
-          <button className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[var(--shadow-soft)]">
+          <Link
+            to="/admin"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[var(--shadow-soft)]"
+          >
             Publicar
-          </button>
+          </Link>
         </div>
 
         <button
