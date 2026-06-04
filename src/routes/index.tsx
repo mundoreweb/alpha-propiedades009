@@ -1,29 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Navbar } from "@/components/Navbar";
+import { HeroSearch } from "@/components/HeroSearch";
+import { FeaturedProperties } from "@/components/FeaturedProperties";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Alpha Propiedades — Bienes raíces en Costa Rica" },
+      { name: "description", content: "Encuentra casas, apartamentos y villas en venta o alquiler en Costa Rica. Propiedades exclusivas en Guanacaste, San José, Heredia y más." },
+      { property: "og:title", content: "Alpha Propiedades — Bienes raíces en Costa Rica" },
+      { property: "og:description", content: "Propiedades exclusivas en venta y alquiler en Costa Rica." },
     ],
   }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <main>
+        <HeroSearch />
+        <FeaturedProperties />
+      </main>
+      <footer className="border-t border-border bg-card">
+        <div className="mx-auto max-w-7xl px-6 py-10 text-sm text-muted-foreground">
+          © {new Date().getFullYear()} Alpha Propiedades · San José, Costa Rica · Pura Vida 🌿
+        </div>
+      </footer>
     </div>
   );
 }
