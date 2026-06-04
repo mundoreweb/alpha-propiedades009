@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { SlidersHorizontal, X } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
@@ -13,12 +12,12 @@ import {
 } from "@/data/properties";
 
 const searchSchema = z.object({
-  modo: fallback(z.enum(["todas", "venta", "alquiler"]), "todas").default("todas"),
-  provincia: fallback(z.string(), "Todas").default("Todas"),
+  modo: z.enum(["todas", "venta", "alquiler"]).catch("todas").default("todas"),
+  provincia: z.string().catch("Todas").default("Todas"),
 });
 
 export const Route = createFileRoute("/catalogo")({
-  validateSearch: zodValidator(searchSchema),
+  validateSearch: (input: Record<string, unknown>) => searchSchema.parse(input),
   head: () => ({
     meta: [
       { title: "Catálogo de Propiedades — Alpha Propiedades" },
