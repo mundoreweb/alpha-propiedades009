@@ -2,11 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { Home, Menu, Heart } from "lucide-react";
 import { useState } from "react";
 
-const navItems = [
+const navItems: Array<{ label: string; to: string; search?: Record<string, string> }> = [
   { label: "Inicio", to: "/" },
-  { label: "Comprar", to: "/" },
-  { label: "Alquilar", to: "/" },
-  { label: "Proyectos", to: "/" },
+  { label: "Comprar", to: "/catalogo", search: { modo: "venta", provincia: "Todas" } },
+  { label: "Alquilar", to: "/catalogo", search: { modo: "alquiler", provincia: "Todas" } },
+  { label: "Proyectos", to: "/catalogo", search: { modo: "todas", provincia: "Todas" } },
   { label: "Nosotros", to: "/" },
 ];
 
