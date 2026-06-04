@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ExplorarZonasRouteImport } from './routes/explorar-zonas'
 import { Route as CatalogoRouteImport } from './routes/catalogo'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PropiedadIdRouteImport } from './routes/propiedad.$id'
 
@@ -22,6 +23,11 @@ const ExplorarZonasRoute = ExplorarZonasRouteImport.update({
 const CatalogoRoute = CatalogoRouteImport.update({
   id: '/catalogo',
   path: '/catalogo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,12 +43,14 @@ const PropiedadIdRoute = PropiedadIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/catalogo': typeof CatalogoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/catalogo': typeof CatalogoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
   '/propiedad/$id': typeof PropiedadIdRoute
@@ -50,20 +58,28 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/catalogo': typeof CatalogoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/catalogo' | '/explorar-zonas' | '/propiedad/$id'
+  fullPaths: '/' | '/admin' | '/catalogo' | '/explorar-zonas' | '/propiedad/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/catalogo' | '/explorar-zonas' | '/propiedad/$id'
-  id: '__root__' | '/' | '/catalogo' | '/explorar-zonas' | '/propiedad/$id'
+  to: '/' | '/admin' | '/catalogo' | '/explorar-zonas' | '/propiedad/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/catalogo'
+    | '/explorar-zonas'
+    | '/propiedad/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   CatalogoRoute: typeof CatalogoRoute
   ExplorarZonasRoute: typeof ExplorarZonasRoute
   PropiedadIdRoute: typeof PropiedadIdRoute
@@ -85,6 +101,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CatalogoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,6 +127,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   CatalogoRoute: CatalogoRoute,
   ExplorarZonasRoute: ExplorarZonasRoute,
   PropiedadIdRoute: PropiedadIdRoute,
