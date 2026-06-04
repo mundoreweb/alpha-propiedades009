@@ -2,11 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { Home, Menu, Heart } from "lucide-react";
 import { useState } from "react";
 
-const navItems = [
+const navItems: Array<{ label: string; to: string; search?: Record<string, string> }> = [
   { label: "Inicio", to: "/" },
-  { label: "Comprar", to: "/" },
-  { label: "Alquilar", to: "/" },
-  { label: "Proyectos", to: "/" },
+  { label: "Comprar", to: "/catalogo", search: { modo: "venta", provincia: "Todas" } },
+  { label: "Alquilar", to: "/catalogo", search: { modo: "alquiler", provincia: "Todas" } },
+  { label: "Proyectos", to: "/catalogo", search: { modo: "todas", provincia: "Todas" } },
   { label: "Nosotros", to: "/" },
 ];
 
@@ -31,6 +31,7 @@ export function Navbar() {
             <Link
               key={item.label}
               to={item.to}
+              search={item.search as never}
               className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
               {item.label}
@@ -63,6 +64,7 @@ export function Navbar() {
               <Link
                 key={item.label}
                 to={item.to}
+                search={item.search as never}
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
               >

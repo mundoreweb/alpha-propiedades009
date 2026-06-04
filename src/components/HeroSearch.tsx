@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { Search, MapPin } from "lucide-react";
 import heroImage from "@/assets/hero-villa.jpg";
 
@@ -18,6 +19,17 @@ type Modo = "venta" | "alquiler";
 export function HeroSearch() {
   const [modo, setModo] = useState<Modo>("venta");
   const [provincia, setProvincia] = useState(provincias[0]);
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    navigate({
+      to: "/catalogo",
+      search: {
+        modo,
+        provincia: provincia === "Todas las provincias" ? "Todas" : provincia,
+      },
+    });
+  };
 
   return (
     <section className="relative isolate overflow-hidden">
@@ -97,6 +109,7 @@ export function HeroSearch() {
               </div>
 
               <button
+                onClick={handleSearch}
                 className="flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-sm font-semibold text-emerald-foreground transition-all hover:opacity-95 hover:shadow-lg"
                 style={{ background: "var(--gradient-emerald)" }}
               >

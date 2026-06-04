@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { PropertyCard, type Property } from "./PropertyCard";
 import p1 from "@/assets/property-1.jpg";
 import p2 from "@/assets/property-2.jpg";
@@ -81,9 +82,13 @@ export function FeaturedProperties() {
             personalmente por nuestro equipo de expertos.
           </p>
         </div>
-        <button className="rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-emerald hover:text-emerald">
+        <Link
+          to="/catalogo"
+          search={{ modo: "todas", provincia: "Todas" }}
+          className="rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-emerald hover:text-emerald"
+        >
           Ver todas las propiedades →
-        </button>
+        </Link>
       </div>
 
       <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
