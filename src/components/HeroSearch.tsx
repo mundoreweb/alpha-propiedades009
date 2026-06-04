@@ -109,6 +109,7 @@ export function HeroSearch() {
               </div>
 
               <button
+                onClick={handleSearch}
                 className="flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-sm font-semibold text-emerald-foreground transition-all hover:opacity-95 hover:shadow-lg"
                 style={{ background: "var(--gradient-emerald)" }}
               >
