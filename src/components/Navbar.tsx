@@ -74,9 +74,13 @@ export function Navbar() {
                 {item.label}
               </Link>
             ))}
-            <button className="mt-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">
+            <Link
+              to="/admin"
+              onClick={() => setOpen(false)}
+              className="mt-2 rounded-full bg-primary px-5 py-2.5 text-center text-sm font-semibold text-primary-foreground"
+            >
               Publicar
-            </button>
+            </Link>
           </nav>
         </div>
       )}
