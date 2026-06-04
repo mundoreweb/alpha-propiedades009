@@ -1,4 +1,5 @@
 import { Heart, BedDouble, Bath, Maximize2, MapPin } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export type Property = {
   id: string;
