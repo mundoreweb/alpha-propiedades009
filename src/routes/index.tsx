@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { HeroSearch } from "@/components/HeroSearch";
 import { FeaturedProperties } from "@/components/FeaturedProperties";
 
@@ -23,11 +24,7 @@ function Index() {
         <HeroSearch />
         <FeaturedProperties />
       </main>
-      <footer className="border-t border-border bg-card">
-        <div className="mx-auto max-w-7xl px-6 py-10 text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Alpha Propiedades · San José, Costa Rica · Pura Vida 🌿
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

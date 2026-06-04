@@ -44,10 +44,11 @@ export function Navbar() {
             <Heart className="h-4.5 w-4.5" />
           </button>
           <Link
-            to="/admin"
+            to="/catalogo"
+            search={{ modo: "todas", provincia: "Todas" } as never}
             className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[var(--shadow-soft)]"
           >
-            Publicar
+            Ver catálogo
           </Link>
         </div>
 
@@ -74,13 +75,6 @@ export function Navbar() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              to="/admin"
-              onClick={() => setOpen(false)}
-              className="mt-2 rounded-full bg-primary px-5 py-2.5 text-center text-sm font-semibold text-primary-foreground"
-            >
-              Publicar
-            </Link>
           </nav>
         </div>
       )}
