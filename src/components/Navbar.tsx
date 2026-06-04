@@ -6,7 +6,7 @@ const navItems: Array<{ label: string; to: string; search?: Record<string, strin
   { label: "Inicio", to: "/" },
   { label: "Comprar", to: "/catalogo", search: { modo: "venta", provincia: "Todas" } },
   { label: "Alquilar", to: "/catalogo", search: { modo: "alquiler", provincia: "Todas" } },
-  { label: "Proyectos", to: "/catalogo", search: { modo: "todas", provincia: "Todas" } },
+  { label: "Explorar Zonas", to: "/explorar-zonas" },
   { label: "Nosotros", to: "/" },
 ];
 
