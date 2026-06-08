@@ -166,25 +166,40 @@ function ExplorarZonas() {
                 aria-label="Mapa de las provincias de Costa Rica"
               >
                 <defs>
-                  <radialGradient id="ocean" cx="50%" cy="50%" r="65%">
-                    <stop offset="0%" stopColor="oklch(0.93 0.04 215)" stopOpacity="0.55" />
-                    <stop offset="100%" stopColor="oklch(0.99 0.005 240)" stopOpacity="0" />
+                  <linearGradient id="ocean" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="oklch(0.62 0.13 230)" />
+                    <stop offset="55%" stopColor="oklch(0.48 0.14 235)" />
+                    <stop offset="100%" stopColor="oklch(0.32 0.09 240)" />
+                  </linearGradient>
+                  <radialGradient id="oceanGlow" cx="50%" cy="45%" r="55%">
+                    <stop offset="0%" stopColor="oklch(0.78 0.12 200)" stopOpacity="0.35" />
+                    <stop offset="100%" stopColor="oklch(0.4 0.1 235)" stopOpacity="0" />
                   </radialGradient>
+                  <pattern id="waves" x="0" y="0" width="40" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M0 10 Q10 4 20 10 T40 10" fill="none" stroke="oklch(0.9 0.04 215)" strokeOpacity="0.18" strokeWidth="1" />
+                  </pattern>
+                  <linearGradient id="land" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="oklch(0.92 0.06 145)" />
+                    <stop offset="100%" stopColor="oklch(0.82 0.09 140)" />
+                  </linearGradient>
                   <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
-                    <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="oklch(0.3 0.06 230)" floodOpacity="0.18" />
+                    <feDropShadow dx="0" dy="8" stdDeviation="10" floodColor="oklch(0.18 0.06 240)" floodOpacity="0.35" />
                   </filter>
                 </defs>
 
                 <rect x="0" y="0" width="700" height="520" fill="url(#ocean)" />
+                <rect x="0" y="0" width="700" height="520" fill="url(#waves)" />
+                <rect x="0" y="0" width="700" height="520" fill="url(#oceanGlow)" />
 
                 {/* Country silhouette underlay for crisp outline */}
                 <path
                   d={COUNTRY_OUTLINE}
-                  fill="oklch(0.97 0.01 220)"
-                  stroke="oklch(0.55 0.02 230)"
-                  strokeWidth={1.5}
+                  fill="url(#land)"
+                  stroke="oklch(0.35 0.05 230)"
+                  strokeWidth={1.8}
                   filter="url(#softShadow)"
                 />
+
 
                 {/* Provinces */}
                 {SHAPES.map((s) => {
