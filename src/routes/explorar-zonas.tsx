@@ -208,8 +208,8 @@ function ExplorarZonas() {
                     <g key={s.name}>
                       <path
                         d={s.d}
-                        fill={isHover ? "var(--emerald)" : "oklch(0.93 0.015 220)"}
-                        stroke={isHover ? "var(--emerald)" : "oklch(0.65 0.02 230)"}
+                        fill={isHover ? "var(--emerald)" : "oklch(0.94 0.05 140)"}
+                        stroke={isHover ? "var(--emerald)" : "oklch(0.45 0.06 145)"}
                         strokeWidth={isHover ? 2 : 1}
                         strokeLinejoin="round"
                         style={{
