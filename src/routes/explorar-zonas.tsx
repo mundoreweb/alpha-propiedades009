@@ -33,59 +33,65 @@ type ProvinciaShape = {
   hideLabel?: boolean;
 };
 
+/**
+ * Realistic silhouette of Costa Rica on a 700x520 viewBox.
+ * NW (Guanacaste + Nicoya peninsula) is upper-left; SE (Osa peninsula)
+ * is lower-right. Caribbean coast (Limón) is the long smoother NE→SE
+ * arc. Coordinates were hand-traced from a reference map.
+ */
 const COUNTRY_OUTLINE =
-  "M70,210 C90,170 130,140 180,128 C210,118 245,112 280,118 L330,108 C370,100 405,108 440,128 L500,150 C545,170 590,200 630,240 C660,270 660,310 620,340 L560,375 C530,395 495,408 460,415 L420,422 L380,455 C350,478 312,488 280,478 L235,460 L195,445 C160,432 130,415 105,388 C82,360 65,322 62,285 C60,255 60,232 70,210 Z";
+  "M92,168 C120,150 158,142 196,146 L238,142 C266,138 292,146 312,162 L348,150 C384,142 420,148 452,168 C492,192 528,220 562,254 C596,288 622,322 638,358 C650,386 638,408 612,418 L568,432 L520,442 C492,450 468,462 448,478 C428,494 402,500 376,492 L344,478 L320,492 C298,504 274,500 256,484 L228,460 L196,448 C160,436 130,418 108,392 C86,366 72,336 70,304 C68,272 72,238 78,208 C82,190 84,178 92,168 Z";
 
 const SHAPES: ProvinciaShape[] = [
-  // Guanacaste — NW + Nicoya peninsula
+  // Guanacaste — NW corner + Nicoya peninsula tail (Tamarindo / Nosara)
   {
     name: "Guanacaste",
-    d: "M70,210 C90,170 130,140 180,128 C220,120 252,124 270,150 L262,210 L240,255 C220,275 195,288 175,295 L150,325 C130,345 110,340 95,320 C75,295 62,262 62,232 C60,222 64,215 70,210 Z",
-    labelX: 158,
-    labelY: 215,
+    d: "M92,168 C120,150 158,142 196,146 L238,142 C260,140 278,148 290,164 L282,210 L268,250 C252,278 230,300 206,316 L186,348 C168,372 146,378 124,366 C100,352 82,330 74,302 C68,272 72,238 78,208 C82,190 84,178 92,168 Z",
+    labelX: 168,
+    labelY: 222,
   },
-  // Alajuela — north central, large
+  // Alajuela — long northern belt along Nicaragua border
   {
     name: "Alajuela",
-    d: "M270,150 L330,108 C370,100 405,108 430,135 L420,200 L370,235 L310,235 L270,215 Z",
-    labelX: 350,
-    labelY: 175,
+    d: "M290,164 C320,156 350,156 380,164 L420,178 L432,212 L410,244 L372,254 L330,252 L296,238 L282,210 Z",
+    labelX: 358,
+    labelY: 208,
   },
-  // Heredia — small wedge north of San José (label hidden, tooltip only)
+  // Heredia — small wedge between Alajuela and Limón, north of San José
   {
     name: "Heredia",
-    d: "M370,235 L420,200 L455,215 L445,255 L395,260 Z",
-    labelX: 410,
-    labelY: 235,
+    d: "M410,244 L432,212 L468,222 L478,256 L450,272 L420,266 Z",
+    labelX: 446,
+    labelY: 248,
     hideLabel: true,
   },
-  // Cartago — east of San José
-  {
-    name: "Cartago",
-    d: "M395,260 L445,255 L495,275 L490,320 L430,330 L400,305 Z",
-    labelX: 450,
-    labelY: 295,
-  },
-  // San José — central, larger so label fits
+  // San José — central, irregular
   {
     name: "San José",
-    d: "M270,215 L310,235 L370,235 L395,260 L400,305 L370,330 L310,335 L268,310 L255,265 Z",
-    labelX: 325,
-    labelY: 285,
+    d: "M296,238 L330,252 L372,254 L410,244 L420,266 L450,272 L452,300 L432,330 L388,344 L344,344 L308,328 L286,300 L282,270 Z",
+    labelX: 368,
+    labelY: 298,
   },
-  // Puntarenas — long Pacific belt + Osa peninsula tail
+  // Cartago — small, east of San José
+  {
+    name: "Cartago",
+    d: "M450,272 L478,256 L516,266 L526,298 L498,320 L460,318 L452,300 Z",
+    labelX: 488,
+    labelY: 294,
+  },
+  // Puntarenas — long Pacific strip + Osa peninsula (SE tail)
   {
     name: "Puntarenas",
-    d: "M240,255 L268,310 L310,335 L370,330 L390,365 C370,395 340,418 305,425 L260,418 C230,410 205,395 185,375 L160,355 C145,338 140,320 150,300 L175,295 C195,288 220,275 240,255 Z",
-    labelX: 255,
-    labelY: 365,
+    d: "M268,250 L282,270 L286,300 L308,328 L344,344 L388,344 L432,330 L452,300 L460,318 L444,348 L406,372 L368,388 L330,402 L298,418 C278,430 258,432 240,420 L218,400 L196,378 C180,362 174,340 184,318 L206,316 C230,300 252,278 268,250 Z",
+    labelX: 300,
+    labelY: 384,
   },
-  // Limón — entire Caribbean side
+  // Limón — entire Caribbean coast, NE→SE arc
   {
     name: "Limón",
-    d: "M430,135 C475,140 520,160 560,185 C600,210 630,240 645,275 C655,305 640,335 605,355 L555,378 C520,395 485,408 460,412 L430,415 L405,395 L420,355 L490,335 L490,320 L495,275 L455,215 L445,200 Z",
-    labelX: 530,
-    labelY: 280,
+    d: "M420,178 C460,176 498,186 534,206 C572,228 606,252 632,284 C652,310 654,336 632,358 L592,388 L548,410 L508,428 C488,438 466,440 448,432 L420,420 L406,398 L432,372 L470,348 L500,326 L526,298 L516,266 L478,256 L468,222 L432,212 Z",
+    labelX: 548,
+    labelY: 296,
   },
 ];
 
@@ -160,25 +166,40 @@ function ExplorarZonas() {
                 aria-label="Mapa de las provincias de Costa Rica"
               >
                 <defs>
-                  <radialGradient id="ocean" cx="50%" cy="50%" r="65%">
-                    <stop offset="0%" stopColor="oklch(0.93 0.04 215)" stopOpacity="0.55" />
-                    <stop offset="100%" stopColor="oklch(0.99 0.005 240)" stopOpacity="0" />
+                  <linearGradient id="ocean" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="oklch(0.62 0.13 230)" />
+                    <stop offset="55%" stopColor="oklch(0.48 0.14 235)" />
+                    <stop offset="100%" stopColor="oklch(0.32 0.09 240)" />
+                  </linearGradient>
+                  <radialGradient id="oceanGlow" cx="50%" cy="45%" r="55%">
+                    <stop offset="0%" stopColor="oklch(0.78 0.12 200)" stopOpacity="0.35" />
+                    <stop offset="100%" stopColor="oklch(0.4 0.1 235)" stopOpacity="0" />
                   </radialGradient>
+                  <pattern id="waves" x="0" y="0" width="40" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M0 10 Q10 4 20 10 T40 10" fill="none" stroke="oklch(0.9 0.04 215)" strokeOpacity="0.18" strokeWidth="1" />
+                  </pattern>
+                  <linearGradient id="land" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="oklch(0.92 0.06 145)" />
+                    <stop offset="100%" stopColor="oklch(0.82 0.09 140)" />
+                  </linearGradient>
                   <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
-                    <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="oklch(0.3 0.06 230)" floodOpacity="0.18" />
+                    <feDropShadow dx="0" dy="8" stdDeviation="10" floodColor="oklch(0.18 0.06 240)" floodOpacity="0.35" />
                   </filter>
                 </defs>
 
                 <rect x="0" y="0" width="700" height="520" fill="url(#ocean)" />
+                <rect x="0" y="0" width="700" height="520" fill="url(#waves)" />
+                <rect x="0" y="0" width="700" height="520" fill="url(#oceanGlow)" />
 
                 {/* Country silhouette underlay for crisp outline */}
                 <path
                   d={COUNTRY_OUTLINE}
-                  fill="oklch(0.97 0.01 220)"
-                  stroke="oklch(0.55 0.02 230)"
-                  strokeWidth={1.5}
+                  fill="url(#land)"
+                  stroke="oklch(0.35 0.05 230)"
+                  strokeWidth={1.8}
                   filter="url(#softShadow)"
                 />
+
 
                 {/* Provinces */}
                 {SHAPES.map((s) => {
@@ -187,8 +208,8 @@ function ExplorarZonas() {
                     <g key={s.name}>
                       <path
                         d={s.d}
-                        fill={isHover ? "var(--emerald)" : "oklch(0.93 0.015 220)"}
-                        stroke={isHover ? "var(--emerald)" : "oklch(0.65 0.02 230)"}
+                        fill={isHover ? "var(--emerald)" : "oklch(0.94 0.05 140)"}
+                        stroke={isHover ? "var(--emerald)" : "oklch(0.45 0.06 145)"}
                         strokeWidth={isHover ? 2 : 1}
                         strokeLinejoin="round"
                         style={{
