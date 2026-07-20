@@ -9,15 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as NosotrosRouteImport } from './routes/nosotros'
 import { Route as ExplorarZonasRouteImport } from './routes/explorar-zonas'
+import { Route as ContactoRouteImport } from './routes/contacto'
 import { Route as CatalogoRouteImport } from './routes/catalogo'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PropiedadIdRouteImport } from './routes/propiedad.$id'
 
+const NosotrosRoute = NosotrosRouteImport.update({
+  id: '/nosotros',
+  path: '/nosotros',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExplorarZonasRoute = ExplorarZonasRouteImport.update({
   id: '/explorar-zonas',
   path: '/explorar-zonas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactoRoute = ContactoRouteImport.update({
+  id: '/contacto',
+  path: '/contacto',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CatalogoRoute = CatalogoRouteImport.update({
@@ -45,14 +57,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/catalogo': typeof CatalogoRoute
+  '/contacto': typeof ContactoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
+  '/nosotros': typeof NosotrosRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/catalogo': typeof CatalogoRoute
+  '/contacto': typeof ContactoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
+  '/nosotros': typeof NosotrosRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRoutesById {
@@ -60,20 +76,38 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/catalogo': typeof CatalogoRoute
+  '/contacto': typeof ContactoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
+  '/nosotros': typeof NosotrosRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/catalogo' | '/explorar-zonas' | '/propiedad/$id'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/catalogo'
+    | '/contacto'
+    | '/explorar-zonas'
+    | '/nosotros'
+    | '/propiedad/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/catalogo' | '/explorar-zonas' | '/propiedad/$id'
+  to:
+    | '/'
+    | '/admin'
+    | '/catalogo'
+    | '/contacto'
+    | '/explorar-zonas'
+    | '/nosotros'
+    | '/propiedad/$id'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/catalogo'
+    | '/contacto'
     | '/explorar-zonas'
+    | '/nosotros'
     | '/propiedad/$id'
   fileRoutesById: FileRoutesById
 }
@@ -81,17 +115,33 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   CatalogoRoute: typeof CatalogoRoute
+  ContactoRoute: typeof ContactoRoute
   ExplorarZonasRoute: typeof ExplorarZonasRoute
+  NosotrosRoute: typeof NosotrosRoute
   PropiedadIdRoute: typeof PropiedadIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/nosotros': {
+      id: '/nosotros'
+      path: '/nosotros'
+      fullPath: '/nosotros'
+      preLoaderRoute: typeof NosotrosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explorar-zonas': {
       id: '/explorar-zonas'
       path: '/explorar-zonas'
       fullPath: '/explorar-zonas'
       preLoaderRoute: typeof ExplorarZonasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contacto': {
+      id: '/contacto'
+      path: '/contacto'
+      fullPath: '/contacto'
+      preLoaderRoute: typeof ContactoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/catalogo': {
@@ -129,7 +179,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   CatalogoRoute: CatalogoRoute,
+  ContactoRoute: ContactoRoute,
   ExplorarZonasRoute: ExplorarZonasRoute,
+  NosotrosRoute: NosotrosRoute,
   PropiedadIdRoute: PropiedadIdRoute,
 }
 export const routeTree = rootRouteImport

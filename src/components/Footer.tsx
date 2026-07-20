@@ -22,6 +22,8 @@ export function Footer() {
             <Link to="/" className="text-muted-foreground hover:text-foreground">Inicio</Link>
             <Link to="/catalogo" search={{ modo: "todas", provincia: "Todas" } as never} className="text-muted-foreground hover:text-foreground">Catálogo</Link>
             <Link to="/explorar-zonas" className="text-muted-foreground hover:text-foreground">Explorar Zonas</Link>
+            <Link to="/nosotros" className="text-muted-foreground hover:text-foreground">Nosotros</Link>
+            <Link to="/contacto" className="text-muted-foreground hover:text-foreground">Contacto</Link>
           </div>
         </div>
 

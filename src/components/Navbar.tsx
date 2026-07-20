@@ -2,13 +2,24 @@ import { Link } from "@tanstack/react-router";
 import { Home, Menu, Heart } from "lucide-react";
 import { useState } from "react";
 
-const navItems: Array<{ label: string; to: string; search?: Record<string, string> }> = [
-  { label: "Inicio", to: "/" },
+const navItems: Array<{
+  label: string;
+  to: string;
+  search?: Record<string, string>;
+  exact?: boolean;
+}> = [
+  { label: "Inicio", to: "/", exact: true },
   { label: "Comprar", to: "/catalogo", search: { modo: "venta", provincia: "Todas" } },
   { label: "Alquilar", to: "/catalogo", search: { modo: "alquiler", provincia: "Todas" } },
   { label: "Explorar Zonas", to: "/explorar-zonas" },
-  { label: "Nosotros", to: "/" },
+  { label: "Nosotros", to: "/nosotros" },
+  { label: "Contacto", to: "/contacto" },
 ];
+
+const inactiveClass =
+  "rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground";
+const activeClass =
+  "rounded-full px-4 py-2 text-sm font-bold text-emerald bg-emerald/10 transition-colors";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -32,7 +43,9 @@ export function Navbar() {
               key={item.label}
               to={item.to}
               search={item.search as never}
-              className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              activeOptions={{ exact: item.exact, includeSearch: false }}
+              activeProps={{ className: activeClass }}
+              inactiveProps={{ className: inactiveClass }}
             >
               {item.label}
             </Link>
@@ -70,7 +83,9 @@ export function Navbar() {
                 to={item.to}
                 search={item.search as never}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
+                activeOptions={{ exact: item.exact, includeSearch: false }}
+                activeProps={{ className: "rounded-lg px-3 py-2.5 text-sm font-bold text-emerald bg-emerald/10" }}
+                inactiveProps={{ className: "rounded-lg px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted" }}
               >
                 {item.label}
               </Link>
