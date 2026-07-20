@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as NosotrosRouteImport } from './routes/nosotros'
 import { Route as ExplorarZonasRouteImport } from './routes/explorar-zonas'
+import { Route as ContactoRouteImport } from './routes/contacto'
 import { Route as CatalogoRouteImport } from './routes/catalogo'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -24,6 +25,11 @@ const NosotrosRoute = NosotrosRouteImport.update({
 const ExplorarZonasRoute = ExplorarZonasRouteImport.update({
   id: '/explorar-zonas',
   path: '/explorar-zonas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactoRoute = ContactoRouteImport.update({
+  id: '/contacto',
+  path: '/contacto',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CatalogoRoute = CatalogoRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/catalogo': typeof CatalogoRoute
+  '/contacto': typeof ContactoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
   '/nosotros': typeof NosotrosRoute
   '/propiedad/$id': typeof PropiedadIdRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/catalogo': typeof CatalogoRoute
+  '/contacto': typeof ContactoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
   '/nosotros': typeof NosotrosRoute
   '/propiedad/$id': typeof PropiedadIdRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/catalogo': typeof CatalogoRoute
+  '/contacto': typeof ContactoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
   '/nosotros': typeof NosotrosRoute
   '/propiedad/$id': typeof PropiedadIdRoute
@@ -78,6 +87,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/catalogo'
+    | '/contacto'
     | '/explorar-zonas'
     | '/nosotros'
     | '/propiedad/$id'
@@ -86,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/catalogo'
+    | '/contacto'
     | '/explorar-zonas'
     | '/nosotros'
     | '/propiedad/$id'
@@ -94,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/catalogo'
+    | '/contacto'
     | '/explorar-zonas'
     | '/nosotros'
     | '/propiedad/$id'
@@ -103,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   CatalogoRoute: typeof CatalogoRoute
+  ContactoRoute: typeof ContactoRoute
   ExplorarZonasRoute: typeof ExplorarZonasRoute
   NosotrosRoute: typeof NosotrosRoute
   PropiedadIdRoute: typeof PropiedadIdRoute
@@ -122,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/explorar-zonas'
       fullPath: '/explorar-zonas'
       preLoaderRoute: typeof ExplorarZonasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contacto': {
+      id: '/contacto'
+      path: '/contacto'
+      fullPath: '/contacto'
+      preLoaderRoute: typeof ContactoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/catalogo': {
@@ -159,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   CatalogoRoute: CatalogoRoute,
+  ContactoRoute: ContactoRoute,
   ExplorarZonasRoute: ExplorarZonasRoute,
   NosotrosRoute: NosotrosRoute,
   PropiedadIdRoute: PropiedadIdRoute,
