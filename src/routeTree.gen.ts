@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PropiedadesRouteImport } from './routes/propiedades'
 import { Route as NosotrosRouteImport } from './routes/nosotros'
 import { Route as ExplorarZonasRouteImport } from './routes/explorar-zonas'
 import { Route as ContactoRouteImport } from './routes/contacto'
@@ -16,7 +17,13 @@ import { Route as CatalogoRouteImport } from './routes/catalogo'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PropiedadIdRouteImport } from './routes/propiedad.$id'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 
+const PropiedadesRoute = PropiedadesRouteImport.update({
+  id: '/propiedades',
+  path: '/propiedades',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NosotrosRoute = NosotrosRouteImport.update({
   id: '/nosotros',
   path: '/nosotros',
@@ -52,33 +59,44 @@ const PropiedadIdRoute = PropiedadIdRouteImport.update({
   path: '/propiedad/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/catalogo': typeof CatalogoRoute
   '/contacto': typeof ContactoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
   '/nosotros': typeof NosotrosRoute
+  '/propiedades': typeof PropiedadesRoute
+  '/admin/login': typeof AdminLoginRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/catalogo': typeof CatalogoRoute
   '/contacto': typeof ContactoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
   '/nosotros': typeof NosotrosRoute
+  '/propiedades': typeof PropiedadesRoute
+  '/admin/login': typeof AdminLoginRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/catalogo': typeof CatalogoRoute
   '/contacto': typeof ContactoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
   '/nosotros': typeof NosotrosRoute
+  '/propiedades': typeof PropiedadesRoute
+  '/admin/login': typeof AdminLoginRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +108,8 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/explorar-zonas'
     | '/nosotros'
+    | '/propiedades'
+    | '/admin/login'
     | '/propiedad/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +119,8 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/explorar-zonas'
     | '/nosotros'
+    | '/propiedades'
+    | '/admin/login'
     | '/propiedad/$id'
   id:
     | '__root__'
@@ -108,21 +130,31 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/explorar-zonas'
     | '/nosotros'
+    | '/propiedades'
+    | '/admin/login'
     | '/propiedad/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   CatalogoRoute: typeof CatalogoRoute
   ContactoRoute: typeof ContactoRoute
   ExplorarZonasRoute: typeof ExplorarZonasRoute
   NosotrosRoute: typeof NosotrosRoute
+  PropiedadesRoute: typeof PropiedadesRoute
   PropiedadIdRoute: typeof PropiedadIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/propiedades': {
+      id: '/propiedades'
+      path: '/propiedades'
+      fullPath: '/propiedades'
+      preLoaderRoute: typeof PropiedadesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/nosotros': {
       id: '/nosotros'
       path: '/nosotros'
@@ -172,28 +204,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PropiedadIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminLoginRoute: typeof AdminLoginRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminLoginRoute: AdminLoginRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   CatalogoRoute: CatalogoRoute,
   ContactoRoute: ContactoRoute,
   ExplorarZonasRoute: ExplorarZonasRoute,
   NosotrosRoute: NosotrosRoute,
+  PropiedadesRoute: PropiedadesRoute,
   PropiedadIdRoute: PropiedadIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
