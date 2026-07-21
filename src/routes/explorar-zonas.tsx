@@ -1,8 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { MapPin, Compass, Leaf, TrendingUp, Sprout } from "lucide-react";
+import { MapPin, Compass, Leaf, TrendingUp, Sprout, X as XIcon } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { PropertyCard } from "@/components/PropertyCard";
 import { properties, provincias } from "@/data/properties";
 
 export const Route = createFileRoute("/explorar-zonas")({
@@ -122,17 +123,26 @@ const REASONS = [
 function ExplorarZonas() {
   const navigate = useNavigate();
   const [hovered, setHovered] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number } | null>(null);
 
   const goToProvincia = (name: string) => {
     navigate({
-      to: "/catalogo",
+      to: "/propiedades",
       search: { modo: "todas", provincia: name },
     });
   };
 
+  const selectProvincia = (name: string) => {
+    setSelected((prev) => (prev === name ? null : name));
+  };
+
   const countByProvincia = (name: string) =>
     properties.filter((p) => p.provincia === name).length;
+
+  const selectedProperties = selected
+    ? properties.filter((p) => p.provincia === selected)
+    : [];
 
   return (
     <div className="min-h-screen bg-background">
