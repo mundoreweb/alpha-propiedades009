@@ -20,7 +20,7 @@ export function Footer() {
 
           <div className="grid grid-cols-2 gap-x-10 gap-y-2 text-sm sm:grid-cols-3">
             <Link to="/" className="text-muted-foreground hover:text-foreground">Inicio</Link>
-            <Link to="/catalogo" search={{ modo: "todas", provincia: "Todas" } as never} className="text-muted-foreground hover:text-foreground">Catálogo</Link>
+            <Link to="/propiedades" search={{ modo: "todas", provincia: "Todas" } as never} className="text-muted-foreground hover:text-foreground">Catálogo</Link>
             <Link to="/explorar-zonas" className="text-muted-foreground hover:text-foreground">Explorar Zonas</Link>
             <Link to="/nosotros" className="text-muted-foreground hover:text-foreground">Nosotros</Link>
             <Link to="/contacto" className="text-muted-foreground hover:text-foreground">Contacto</Link>

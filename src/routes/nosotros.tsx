@@ -84,7 +84,7 @@ function Nosotros() {
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  to="/catalogo"
+                  to="/propiedades"
                   search={{ modo: "todas", provincia: "Todas" } as never}
                   className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
                 >
@@ -149,7 +149,7 @@ function Nosotros() {
             </div>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
-                to="/catalogo"
+                to="/propiedades"
                 search={{ modo: "todas", provincia: "Todas" } as never}
                 className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
               >
