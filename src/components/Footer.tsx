@@ -30,7 +30,7 @@ export function Footer() {
         <div className="mt-8 flex flex-col items-start justify-between gap-3 border-t border-border/60 pt-5 text-xs text-muted-foreground sm:flex-row sm:items-center">
           <p>© {new Date().getFullYear()} Alpha Propiedades · Costa Rica.</p>
           <Link
-            to="/admin"
+            to="/admin/login"
             className="text-[11px] tracking-wide text-muted-foreground/70 hover:text-emerald"
           >
             Acceso Administración

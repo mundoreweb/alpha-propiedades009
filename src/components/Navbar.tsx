@@ -9,17 +9,16 @@ const navItems: Array<{
   exact?: boolean;
 }> = [
   { label: "Inicio", to: "/", exact: true },
-  { label: "Comprar", to: "/catalogo", search: { modo: "venta", provincia: "Todas" } },
-  { label: "Alquilar", to: "/catalogo", search: { modo: "alquiler", provincia: "Todas" } },
+  { label: "Propiedades", to: "/propiedades" },
   { label: "Explorar Zonas", to: "/explorar-zonas" },
   { label: "Nosotros", to: "/nosotros" },
   { label: "Contacto", to: "/contacto" },
 ];
 
 const inactiveClass =
-  "rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground";
+  "relative rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground";
 const activeClass =
-  "rounded-full px-4 py-2 text-sm font-bold text-emerald bg-emerald/10 transition-colors";
+  "relative rounded-full px-4 py-2 text-sm font-bold text-emerald bg-emerald/10 transition-colors after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1.5 after:h-1 after:w-1 after:rounded-full after:bg-emerald";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -57,8 +56,7 @@ export function Navbar() {
             <Heart className="h-4.5 w-4.5" />
           </button>
           <Link
-            to="/catalogo"
-            search={{ modo: "todas", provincia: "Todas" } as never}
+            to="/propiedades"
             className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[var(--shadow-soft)]"
           >
             Ver catálogo
