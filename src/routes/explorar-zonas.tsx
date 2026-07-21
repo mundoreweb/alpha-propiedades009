@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { MapPin, Compass, Leaf, TrendingUp, Sprout, X as XIcon } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
@@ -121,17 +121,9 @@ const REASONS = [
 ] as const;
 
 function ExplorarZonas() {
-  const navigate = useNavigate();
   const [hovered, setHovered] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number } | null>(null);
-
-  const goToProvincia = (name: string) => {
-    navigate({
-      to: "/propiedades",
-      search: { modo: "todas", provincia: name },
-    });
-  };
 
   const selectProvincia = (name: string) => {
     setSelected((prev) => (prev === name ? null : name));
