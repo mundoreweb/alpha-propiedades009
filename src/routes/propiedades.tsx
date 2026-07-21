@@ -16,22 +16,22 @@ const searchSchema = z.object({
   provincia: z.string().catch("Todas").default("Todas"),
 });
 
-export const Route = createFileRoute("/catalogo")({
+export const Route = createFileRoute("/propiedades")({
   validateSearch: (input: Record<string, unknown>) => searchSchema.parse(input),
   head: () => ({
     meta: [
-      { title: "Catálogo de Propiedades — Alpha Propiedades" },
+      { title: "Propiedades — Alpha Propiedades" },
       { name: "description", content: "Explora y filtra propiedades en venta y alquiler en Costa Rica por provincia, precio, habitaciones y más." },
     ],
   }),
-  component: Catalogo,
+  component: Propiedades,
 });
 
 const MAX_PRICE = 1500000;
 
-function Catalogo() {
+function Propiedades() {
   const search = Route.useSearch();
-  const navigate = useNavigate({ from: "/catalogo" });
+  const navigate = useNavigate({ from: "/propiedades" });
 
   const [modo, setModo] = useState<"todas" | "venta" | "alquiler">(search.modo);
   const [provincia, setProvincia] = useState<string>(search.provincia);
@@ -50,7 +50,6 @@ function Catalogo() {
       if (modo !== "todas" && p.type.toLowerCase() !== modo) return false;
       if (provincia !== "Todas" && p.provincia !== provincia) return false;
       if (canton !== "Todos" && p.canton !== canton) return false;
-      // For rent, price comparison only makes sense in venta range
       if (p.type === "Venta") {
         if (p.priceUSD < price[0] || p.priceUSD > price[1]) return false;
       }
@@ -159,7 +158,7 @@ function Catalogo() {
       <div className="border-b border-border bg-card">
         <div className="mx-auto max-w-7xl px-6 py-10">
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald">
-            Catálogo
+            Propiedades
           </span>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Encuentra tu propiedad ideal
@@ -172,7 +171,6 @@ function Catalogo() {
 
       <div className="mx-auto max-w-7xl px-6 py-10">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
-          {/* Sidebar desktop */}
           <aside className="hidden lg:block">
             <div className="sticky top-24 rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
               <h2 className="mb-5 text-sm font-bold uppercase tracking-wider text-foreground">Filtros</h2>
@@ -180,7 +178,6 @@ function Catalogo() {
             </div>
           </aside>
 
-          {/* Mobile button */}
           <div className="lg:hidden">
             <button
               onClick={() => setOpenMobile(true)}
@@ -190,7 +187,6 @@ function Catalogo() {
             </button>
           </div>
 
-          {/* Results */}
           <section>
             <div className="mb-5 flex items-center justify-between">
               <p className="text-sm text-muted-foreground">
@@ -212,7 +208,6 @@ function Catalogo() {
         </div>
       </div>
 
-      {/* Mobile filters drawer */}
       {openMobile && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-foreground/40" onClick={() => setOpenMobile(false)} />

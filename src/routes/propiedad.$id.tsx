@@ -43,7 +43,7 @@ export const Route = createFileRoute("/propiedad/$id")({
         <h1 className="text-3xl font-bold text-foreground">Propiedad no encontrada</h1>
         <p className="mt-2 text-muted-foreground">La propiedad que buscas no está disponible.</p>
         <Link
-          to="/catalogo"
+          to="/propiedades"
           search={{ modo: "todas", provincia: "Todas" }}
           className="mt-6 inline-flex rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
         >
@@ -92,7 +92,7 @@ function PropertyDetail() {
 
       <div className="mx-auto max-w-7xl px-6 py-6">
         <Link
-          to="/catalogo"
+          to="/propiedades"
           search={{ modo: "todas", provincia: "Todas" }}
           className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-emerald"
         >

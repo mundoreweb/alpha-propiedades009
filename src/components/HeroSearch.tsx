@@ -23,7 +23,7 @@ export function HeroSearch() {
 
   const handleSearch = () => {
     navigate({
-      to: "/catalogo",
+      to: "/propiedades",
       search: {
         modo,
         provincia: provincia === "Todas las provincias" ? "Todas" : provincia,

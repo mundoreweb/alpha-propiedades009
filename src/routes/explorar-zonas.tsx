@@ -1,8 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { MapPin, Compass, Leaf, TrendingUp, Sprout } from "lucide-react";
+import { MapPin, Compass, Leaf, TrendingUp, Sprout, X as XIcon } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { PropertyCard } from "@/components/PropertyCard";
 import { properties, provincias } from "@/data/properties";
 
 export const Route = createFileRoute("/explorar-zonas")({
@@ -120,19 +121,20 @@ const REASONS = [
 ] as const;
 
 function ExplorarZonas() {
-  const navigate = useNavigate();
   const [hovered, setHovered] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number } | null>(null);
 
-  const goToProvincia = (name: string) => {
-    navigate({
-      to: "/catalogo",
-      search: { modo: "todas", provincia: name },
-    });
+  const selectProvincia = (name: string) => {
+    setSelected((prev) => (prev === name ? null : name));
   };
 
   const countByProvincia = (name: string) =>
     properties.filter((p) => p.provincia === name).length;
+
+  const selectedProperties = selected
+    ? properties.filter((p) => p.provincia === selected)
+    : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -204,18 +206,20 @@ function ExplorarZonas() {
                 {/* Provinces */}
                 {SHAPES.map((s) => {
                   const isHover = hovered === s.name;
+                  const isSelected = selected === s.name;
+                  const active = isHover || isSelected;
                   return (
                     <g key={s.name}>
                       <path
                         d={s.d}
-                        fill={isHover ? "var(--emerald)" : "oklch(0.94 0.05 140)"}
-                        stroke={isHover ? "var(--emerald)" : "oklch(0.45 0.06 145)"}
-                        strokeWidth={isHover ? 2 : 1}
+                        fill={active ? "var(--emerald)" : "oklch(0.94 0.05 140)"}
+                        stroke={active ? "var(--emerald)" : "oklch(0.45 0.06 145)"}
+                        strokeWidth={isSelected ? 2.5 : active ? 2 : 1}
                         strokeLinejoin="round"
                         style={{
                           cursor: "pointer",
                           transition: "fill .25s ease, stroke .25s ease, filter .25s ease",
-                          filter: isHover
+                          filter: active
                             ? "drop-shadow(0 8px 18px oklch(0.62 0.14 175 / 0.5))"
                             : "none",
                         }}
@@ -234,7 +238,7 @@ function ExplorarZonas() {
                           setHovered(null);
                           setTooltip(null);
                         }}
-                        onClick={() => goToProvincia(s.name)}
+                        onClick={() => selectProvincia(s.name)}
                       />
                       {!s.hideLabel && (
                         <text
@@ -247,7 +251,7 @@ function ExplorarZonas() {
                             fontSize: 12,
                             fontWeight: 700,
                             letterSpacing: 0.2,
-                            fill: isHover ? "var(--emerald-foreground)" : "oklch(0.28 0.05 230)",
+                            fill: active ? "var(--emerald-foreground)" : "oklch(0.28 0.05 230)",
                             transition: "fill .25s ease",
                           }}
                         >
@@ -277,28 +281,42 @@ function ExplorarZonas() {
             </div>
 
             <p className="mt-4 text-center text-xs text-muted-foreground">
-              Mapa estilizado · Haz clic en una provincia para filtrar el catálogo
+              Mapa estilizado · Haz clic en una provincia para filtrar las propiedades
             </p>
           </div>
 
           {/* Provinces list */}
           <div className="rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
-            <h2 className="text-lg font-bold text-foreground">Provincias</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-foreground">Provincias</h2>
+              {selected && (
+                <button
+                  onClick={() => setSelected(null)}
+                  className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] font-semibold text-muted-foreground hover:border-emerald hover:text-emerald"
+                >
+                  <XIcon className="h-3 w-3" /> Limpiar
+                </button>
+              )}
+            </div>
             <p className="mt-1 text-sm text-muted-foreground">
               Selecciona una provincia para ver sus propiedades.
             </p>
             <div className="mt-5 flex flex-col gap-2">
               {provincias.map((p) => {
                 const count = countByProvincia(p);
-                const active = hovered === p;
+                const isHover = hovered === p;
+                const isSelected = selected === p;
+                const active = isHover || isSelected;
                 return (
                   <button
                     key={p}
                     onMouseEnter={() => setHovered(p)}
                     onMouseLeave={() => setHovered(null)}
-                    onClick={() => goToProvincia(p)}
+                    onClick={() => selectProvincia(p)}
                     className={`group flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition-all ${
-                      active
+                      isSelected
+                        ? "border-emerald bg-emerald/10 ring-2 ring-emerald/30"
+                        : active
                         ? "border-emerald bg-emerald/10"
                         : "border-border hover:border-emerald/40 hover:bg-muted"
                     }`}
@@ -318,8 +336,8 @@ function ExplorarZonas() {
                         </span>
                       </span>
                     </span>
-                    <span className="text-xs font-semibold text-emerald opacity-0 transition-opacity group-hover:opacity-100">
-                      Explorar →
+                    <span className={`text-xs font-semibold text-emerald transition-opacity ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+                      {isSelected ? "Activa" : "Ver →"}
                     </span>
                   </button>
                 );
@@ -327,6 +345,46 @@ function ExplorarZonas() {
             </div>
           </div>
         </div>
+
+        {/* Filtered properties (two-way sync with map + list) */}
+        {selected && (
+          <div className="mt-12">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald">
+                  <MapPin className="h-4 w-4" />
+                  Provincia seleccionada
+                </div>
+                <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                  Propiedades en <span className="text-emerald">{selected}</span>
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {selectedProperties.length} {selectedProperties.length === 1 ? "resultado" : "resultados"} disponibles en esta zona.
+                </p>
+              </div>
+              <Link
+                to="/propiedades"
+                search={{ modo: "todas", provincia: selected } as never}
+                className="inline-flex items-center gap-1.5 self-start rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 sm:self-auto"
+              >
+                Ver en catálogo completo →
+              </Link>
+            </div>
+
+            {selectedProperties.length === 0 ? (
+              <div className="mt-6 rounded-3xl border border-dashed border-border bg-card/50 p-12 text-center">
+                <p className="text-sm font-semibold text-foreground">Aún no hay propiedades listadas en {selected}.</p>
+                <p className="mt-1 text-xs text-muted-foreground">Estamos ampliando nuestro inventario en esta zona.</p>
+              </div>
+            ) : (
+              <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                {selectedProperties.map((p) => (
+                  <PropertyCard key={p.id} property={p} />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
       {/* Why invest in Costa Rica */}

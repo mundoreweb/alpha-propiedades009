@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Plus, Pencil, Trash2, Search, X, Home as HomeIcon, ShieldCheck } from "lucide-react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { Plus, Pencil, Trash2, Search, X, Home as HomeIcon, ShieldCheck, LogOut, ImagePlus } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import {
   properties as seedProperties,
@@ -8,6 +8,7 @@ import {
   cantonesPorProvincia,
   type CatalogProperty,
 } from "@/data/properties";
+import { isAdminAuthed, logoutAdmin } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/admin")({
         name: "description",
         content: "Panel interno para gestionar el inventario de propiedades de Alpha Propiedades.",
       },
+      { name: "robots", content: "noindex" },
     ],
   }),
   component: AdminPanel,
@@ -34,7 +36,7 @@ type FormState = {
   beds: string;
   baths: string;
   parking: string;
-  image: string;
+  images: string[];
 };
 
 const EMPTY_FORM: FormState = {
@@ -48,20 +50,29 @@ const EMPTY_FORM: FormState = {
   beds: "",
   baths: "",
   parking: "",
-  image: "",
+  images: [""],
 };
 
-function formatPrice(usd: number, type: "Venta" | "Alquiler") {
-  const v = `$${usd.toLocaleString("en-US")}`;
-  return type === "Alquiler" ? `${v}` : v;
+function formatPrice(usd: number) {
+  return `$${usd.toLocaleString("en-US")}`;
 }
 
 function AdminPanel() {
+  const navigate = useNavigate();
+  const [ready, setReady] = useState(false);
   const [list, setList] = useState<CatalogProperty[]>(seedProperties);
   const [query, setQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [editing, setEditing] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isAdminAuthed()) {
+      navigate({ to: "/admin/login" });
+    } else {
+      setReady(true);
+    }
+  }, [navigate]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -81,6 +92,7 @@ function AdminPanel() {
   };
 
   const openEdit = (p: CatalogProperty) => {
+    const existing = (p as CatalogProperty & { images?: string[] }).images;
     setForm({
       id: p.id,
       title: p.title,
@@ -93,7 +105,7 @@ function AdminPanel() {
       beds: String(p.beds),
       baths: String(p.baths),
       parking: String(p.parking),
-      image: p.image,
+      images: existing && existing.length > 0 ? existing : [typeof p.image === "string" ? p.image : ""],
     });
     setEditing(p.id);
     setModalOpen(true);
@@ -105,14 +117,21 @@ function AdminPanel() {
     }
   };
 
+  const handleLogout = () => {
+    logoutAdmin();
+    navigate({ to: "/admin/login" });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const usd = Number(form.priceUSD) || 0;
-    const item: CatalogProperty = {
+    const cleanImages = form.images.map((s) => s.trim()).filter(Boolean);
+    const primary = cleanImages[0] || (seedProperties[0].image as string);
+    const item: CatalogProperty & { images?: string[] } = {
       id: editing ?? String(Date.now()),
       title: form.title,
       location: `${form.canton}, ${form.provincia}`,
-      price: form.type === "Alquiler" ? `$${usd.toLocaleString("en-US")}` : `$${usd.toLocaleString("en-US")}`,
+      price: `$${usd.toLocaleString("en-US")}`,
       priceUSD: usd,
       period: form.type === "Alquiler" ? "mes" : undefined,
       type: form.type,
@@ -123,7 +142,8 @@ function AdminPanel() {
       parking: Number(form.parking) || 0,
       area: `${form.areaNum} m²`,
       areaNum: Number(form.areaNum) || 0,
-      image: form.image || seedProperties[0].image,
+      image: primary,
+      images: cleanImages.length > 0 ? cleanImages : [primary as string],
     };
 
     setList((prev) =>
@@ -135,6 +155,23 @@ function AdminPanel() {
   };
 
   const cantones = cantonesPorProvincia[form.provincia] ?? [];
+
+  const addImage = () => setForm((f) => ({ ...f, images: [...f.images, ""] }));
+  const removeImage = (i: number) =>
+    setForm((f) => ({
+      ...f,
+      images: f.images.length > 1 ? f.images.filter((_, idx) => idx !== i) : [""],
+    }));
+  const updateImage = (i: number, v: string) =>
+    setForm((f) => ({ ...f, images: f.images.map((s, idx) => (idx === i ? v : s)) }));
+
+  if (!ready) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-muted/30">
+        <p className="text-sm text-muted-foreground">Verificando acceso…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -155,13 +192,22 @@ function AdminPanel() {
               Gestiona todas las propiedades publicadas en Alpha Propiedades.
             </p>
           </div>
-          <button
-            onClick={openCreate}
-            className="inline-flex items-center gap-2 self-start rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[var(--shadow-soft)]"
-          >
-            <Plus className="h-4 w-4" />
-            Agregar propiedad
-          </button>
+          <div className="flex items-center gap-2 self-start">
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-destructive hover:text-destructive"
+            >
+              <LogOut className="h-4 w-4" />
+              Cerrar Sesión
+            </button>
+            <button
+              onClick={openCreate}
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[var(--shadow-soft)]"
+            >
+              <Plus className="h-4 w-4" />
+              Agregar propiedad
+            </button>
+          </div>
         </div>
 
         {/* Stats */}
@@ -205,7 +251,7 @@ function AdminPanel() {
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-3">
                         <img
-                          src={p.image}
+                          src={typeof p.image === "string" ? p.image : (p.image as unknown as string)}
                           alt={p.title}
                           className="h-12 w-16 rounded-lg object-cover"
                         />
@@ -228,7 +274,7 @@ function AdminPanel() {
                       </span>
                     </td>
                     <td className="px-5 py-3 font-semibold text-foreground">
-                      {formatPrice(p.priceUSD, p.type)}
+                      {formatPrice(p.priceUSD)}
                       {p.period && (
                         <span className="text-xs font-normal text-muted-foreground"> / {p.period}</span>
                       )}
@@ -404,14 +450,61 @@ function AdminPanel() {
                 </Field>
               </div>
 
-              <Field label="URL de imagen principal">
-                <input
-                  value={form.image}
-                  onChange={(e) => setForm({ ...form, image: e.target.value })}
-                  className={inputClass}
-                  placeholder="https://…"
-                />
-              </Field>
+              {/* Multiple images */}
+              <div>
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Galería de imágenes
+                  </span>
+                  <span className="text-[11px] text-muted-foreground">
+                    La primera se usa como principal
+                  </span>
+                </div>
+                <div className="space-y-3">
+                  {form.images.map((url, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-3 rounded-xl border border-border bg-background p-2.5"
+                    >
+                      <div className="flex h-14 w-20 items-center justify-center overflow-hidden rounded-lg border border-border bg-muted">
+                        {url ? (
+                          <img src={url} alt={`Imagen ${i + 1}`} className="h-full w-full object-cover" />
+                        ) : (
+                          <ImagePlus className="h-5 w-5 text-muted-foreground" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                            {i === 0 ? "Principal" : `Imagen ${i + 1}`}
+                          </span>
+                        </div>
+                        <input
+                          value={url}
+                          onChange={(e) => updateImage(i, e.target.value)}
+                          className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-emerald focus:outline-none"
+                          placeholder="https://…"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeImage(i)}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
+                        aria-label="Eliminar imagen"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={addImage}
+                  className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-dashed border-emerald/50 bg-emerald/5 px-4 py-2 text-xs font-semibold text-emerald transition-colors hover:bg-emerald/10"
+                >
+                  <Plus className="h-3.5 w-3.5" /> Agregar otra imagen
+                </button>
+              </div>
 
               <Field label="Descripción">
                 <textarea
@@ -463,10 +556,8 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-2xl border border-border bg-card px-5 py-4 shadow-[var(--shadow-soft)]">
-      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </div>
-      <div className="mt-1 text-2xl font-bold text-foreground">{value}</div>
+      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="mt-1 text-2xl font-bold text-foreground">{value}</p>
     </div>
   );
 }
