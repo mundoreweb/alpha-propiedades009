@@ -37,6 +37,7 @@ type FormState = {
   baths: string;
   parking: string;
   images: string[];
+  rentalStatus: "Disponible" | "Alquilada";
 };
 
 const EMPTY_FORM: FormState = {
@@ -51,6 +52,7 @@ const EMPTY_FORM: FormState = {
   baths: "",
   parking: "",
   images: [""],
+  rentalStatus: "Disponible",
 };
 
 function formatPrice(usd: number) {
@@ -59,7 +61,7 @@ function formatPrice(usd: number) {
 
 function AdminPanel() {
   const navigate = useNavigate();
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState<boolean>(() => isAdminAuthed());
   const [list, setList] = useState<CatalogProperty[]>(seedProperties);
   const [query, setQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
@@ -69,10 +71,11 @@ function AdminPanel() {
   useEffect(() => {
     if (!isAdminAuthed()) {
       navigate({ to: "/admin/login" });
-    } else {
+    } else if (!ready) {
       setReady(true);
     }
-  }, [navigate]);
+  }, [navigate, ready]);
+
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -106,10 +109,12 @@ function AdminPanel() {
       baths: String(p.baths),
       parking: String(p.parking),
       images: existing && existing.length > 0 ? existing : [typeof p.image === "string" ? p.image : ""],
+      rentalStatus: p.rentalStatus ?? "Disponible",
     });
     setEditing(p.id);
     setModalOpen(true);
   };
+
 
   const handleDelete = (id: string) => {
     if (confirm("¿Eliminar esta propiedad? Esta acción no se puede deshacer.")) {
@@ -144,6 +149,7 @@ function AdminPanel() {
       areaNum: Number(form.areaNum) || 0,
       image: primary,
       images: cleanImages.length > 0 ? cleanImages : [primary as string],
+      rentalStatus: form.type === "Alquiler" ? form.rentalStatus : undefined,
     };
 
     setList((prev) =>
@@ -166,11 +172,7 @@ function AdminPanel() {
     setForm((f) => ({ ...f, images: f.images.map((s, idx) => (idx === i ? v : s)) }));
 
   if (!ready) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-muted/30">
-        <p className="text-sm text-muted-foreground">Verificando acceso…</p>
-      </div>
-    );
+    return null;
   }
 
   return (
@@ -237,6 +239,7 @@ function AdminPanel() {
                   <th className="px-5 py-3.5">Propiedad</th>
                   <th className="px-5 py-3.5">Ubicación</th>
                   <th className="px-5 py-3.5">Operación</th>
+                  <th className="px-5 py-3.5">Estado</th>
                   <th className="px-5 py-3.5">Precio</th>
                   <th className="px-5 py-3.5">Detalles</th>
                   <th className="px-5 py-3.5 text-right">Acciones</th>
@@ -273,6 +276,31 @@ function AdminPanel() {
                         {p.type}
                       </span>
                     </td>
+                    <td className="px-5 py-3">
+                      {p.type === "Alquiler" ? (
+                        <button
+                          onClick={() =>
+                            setList((prev) =>
+                              prev.map((x) =>
+                                x.id === p.id
+                                  ? { ...x, rentalStatus: x.rentalStatus === "Alquilada" ? "Disponible" : "Alquilada" }
+                                  : x,
+                              ),
+                            )
+                          }
+                          title="Cambiar estado"
+                          className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${
+                            (p.rentalStatus ?? "Disponible") === "Alquilada"
+                              ? "bg-amber-500/15 text-amber-700 hover:bg-amber-500/25 dark:text-amber-400"
+                              : "bg-emerald/15 text-emerald hover:bg-emerald/25"
+                          }`}
+                        >
+                          ● {p.rentalStatus ?? "Disponible"}
+                        </button>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </td>
                     <td className="px-5 py-3 font-semibold text-foreground">
                       {formatPrice(p.priceUSD)}
                       {p.period && (
@@ -304,7 +332,7 @@ function AdminPanel() {
                 ))}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-5 py-12 text-center text-sm text-muted-foreground">
+                    <td colSpan={7} className="px-5 py-12 text-center text-sm text-muted-foreground">
                       <HomeIcon className="mx-auto mb-2 h-6 w-6 opacity-50" />
                       No hay propiedades que coincidan con la búsqueda.
                     </td>
@@ -379,6 +407,29 @@ function AdminPanel() {
                   />
                 </Field>
               </div>
+
+              {form.type === "Alquiler" && (
+                <Field label="Estado del alquiler">
+                  <div className="flex gap-1 rounded-xl bg-muted p-1">
+                    {(["Disponible", "Alquilada"] as const).map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setForm({ ...form, rentalStatus: s })}
+                        className={`flex-1 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
+                          form.rentalStatus === s
+                            ? s === "Alquilada"
+                              ? "bg-amber-500 text-white shadow-sm"
+                              : "bg-emerald text-emerald-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        ● {s}
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+              )}
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Provincia">
