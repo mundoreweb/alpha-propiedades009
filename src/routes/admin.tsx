@@ -37,6 +37,7 @@ type FormState = {
   baths: string;
   parking: string;
   images: string[];
+  rentalStatus: "Disponible" | "Alquilada";
 };
 
 const EMPTY_FORM: FormState = {
@@ -51,6 +52,7 @@ const EMPTY_FORM: FormState = {
   baths: "",
   parking: "",
   images: [""],
+  rentalStatus: "Disponible",
 };
 
 function formatPrice(usd: number) {
@@ -59,7 +61,7 @@ function formatPrice(usd: number) {
 
 function AdminPanel() {
   const navigate = useNavigate();
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState<boolean>(() => isAdminAuthed());
   const [list, setList] = useState<CatalogProperty[]>(seedProperties);
   const [query, setQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
@@ -69,10 +71,11 @@ function AdminPanel() {
   useEffect(() => {
     if (!isAdminAuthed()) {
       navigate({ to: "/admin/login" });
-    } else {
+    } else if (!ready) {
       setReady(true);
     }
-  }, [navigate]);
+  }, [navigate, ready]);
+
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -106,10 +109,12 @@ function AdminPanel() {
       baths: String(p.baths),
       parking: String(p.parking),
       images: existing && existing.length > 0 ? existing : [typeof p.image === "string" ? p.image : ""],
+      rentalStatus: p.rentalStatus ?? "Disponible",
     });
     setEditing(p.id);
     setModalOpen(true);
   };
+
 
   const handleDelete = (id: string) => {
     if (confirm("¿Eliminar esta propiedad? Esta acción no se puede deshacer.")) {
@@ -144,6 +149,7 @@ function AdminPanel() {
       areaNum: Number(form.areaNum) || 0,
       image: primary,
       images: cleanImages.length > 0 ? cleanImages : [primary as string],
+      rentalStatus: form.type === "Alquiler" ? form.rentalStatus : undefined,
     };
 
     setList((prev) =>
@@ -166,11 +172,7 @@ function AdminPanel() {
     setForm((f) => ({ ...f, images: f.images.map((s, idx) => (idx === i ? v : s)) }));
 
   if (!ready) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-muted/30">
-        <p className="text-sm text-muted-foreground">Verificando acceso…</p>
-      </div>
-    );
+    return null;
   }
 
   return (
