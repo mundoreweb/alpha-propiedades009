@@ -46,6 +46,7 @@ export const properties: CatalogProperty[] = [
     price: "$3,800", priceUSD: 3800, period: "mes", type: "Alquiler",
     beds: 3, baths: 3, parking: 2, area: "280 m²", areaNum: 280,
     image: p2, featured: true, provincia: "San José", canton: "Escazú",
+    rentalStatus: "Disponible",
   },
   {
     id: "3", title: "Casa Bosque Nuboso", location: "Monteverde, Puntarenas",
@@ -64,6 +65,7 @@ export const properties: CatalogProperty[] = [
     price: "$2,400", priceUSD: 2400, period: "mes", type: "Alquiler",
     beds: 2, baths: 2, parking: 1, area: "180 m²", areaNum: 180,
     image: p5, provincia: "Puntarenas", canton: "Jacó",
+    rentalStatus: "Alquilada",
   },
   {
     id: "6", title: "Cabaña Montaña Verde", location: "Cartago Centro, Cartago",
@@ -76,6 +78,7 @@ export const properties: CatalogProperty[] = [
     price: "$2,100", priceUSD: 2100, period: "mes", type: "Alquiler",
     beds: 1, baths: 1, parking: 1, area: "95 m²", areaNum: 95,
     image: p2, provincia: "San José", canton: "Santa Ana",
+    rentalStatus: "Disponible",
   },
   {
     id: "8", title: "Casa Colonial Heredia", location: "San Rafael, Heredia",
