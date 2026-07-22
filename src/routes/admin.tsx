@@ -332,7 +332,7 @@ function AdminPanel() {
                 ))}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-5 py-12 text-center text-sm text-muted-foreground">
+                    <td colSpan={7} className="px-5 py-12 text-center text-sm text-muted-foreground">
                       <HomeIcon className="mx-auto mb-2 h-6 w-6 opacity-50" />
                       No hay propiedades que coincidan con la búsqueda.
                     </td>
