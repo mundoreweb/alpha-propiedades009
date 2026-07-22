@@ -147,8 +147,20 @@ function PropertyDetail() {
             <img
               src={gallery[activeIdx]}
               alt={property.title}
-              className="aspect-[16/10] w-full object-cover"
+              className={`aspect-[16/10] w-full object-cover ${
+                property.type === "Alquiler" && property.rentalStatus === "Alquilada" ? "grayscale-[30%]" : ""
+              }`}
             />
+            {property.type === "Alquiler" && property.rentalStatus === "Alquilada" && (
+              <>
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/10 to-transparent" />
+                <div className="pointer-events-none absolute left-6 top-6">
+                  <span className="rounded-full bg-amber-500 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg ring-2 ring-white/30">
+                    Actualmente Alquilada
+                  </span>
+                </div>
+              </>
+            )}
             <button
               onClick={prev}
               aria-label="Anterior"
