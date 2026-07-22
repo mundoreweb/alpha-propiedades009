@@ -408,6 +408,29 @@ function AdminPanel() {
                 </Field>
               </div>
 
+              {form.type === "Alquiler" && (
+                <Field label="Estado del alquiler">
+                  <div className="flex gap-1 rounded-xl bg-muted p-1">
+                    {(["Disponible", "Alquilada"] as const).map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setForm({ ...form, rentalStatus: s })}
+                        className={`flex-1 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
+                          form.rentalStatus === s
+                            ? s === "Alquilada"
+                              ? "bg-amber-500 text-white shadow-sm"
+                              : "bg-emerald text-emerald-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        ● {s}
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+              )}
+
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Provincia">
                   <select
