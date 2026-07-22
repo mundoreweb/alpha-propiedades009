@@ -239,6 +239,7 @@ function AdminPanel() {
                   <th className="px-5 py-3.5">Propiedad</th>
                   <th className="px-5 py-3.5">Ubicación</th>
                   <th className="px-5 py-3.5">Operación</th>
+                  <th className="px-5 py-3.5">Estado</th>
                   <th className="px-5 py-3.5">Precio</th>
                   <th className="px-5 py-3.5">Detalles</th>
                   <th className="px-5 py-3.5 text-right">Acciones</th>
@@ -274,6 +275,31 @@ function AdminPanel() {
                       >
                         {p.type}
                       </span>
+                    </td>
+                    <td className="px-5 py-3">
+                      {p.type === "Alquiler" ? (
+                        <button
+                          onClick={() =>
+                            setList((prev) =>
+                              prev.map((x) =>
+                                x.id === p.id
+                                  ? { ...x, rentalStatus: x.rentalStatus === "Alquilada" ? "Disponible" : "Alquilada" }
+                                  : x,
+                              ),
+                            )
+                          }
+                          title="Cambiar estado"
+                          className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${
+                            (p.rentalStatus ?? "Disponible") === "Alquilada"
+                              ? "bg-amber-500/15 text-amber-700 hover:bg-amber-500/25 dark:text-amber-400"
+                              : "bg-emerald/15 text-emerald hover:bg-emerald/25"
+                          }`}
+                        >
+                          ● {p.rentalStatus ?? "Disponible"}
+                        </button>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
                     </td>
                     <td className="px-5 py-3 font-semibold text-foreground">
                       {formatPrice(p.priceUSD)}
