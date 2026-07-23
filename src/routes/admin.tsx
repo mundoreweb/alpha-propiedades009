@@ -175,9 +175,10 @@ function AdminPanel() {
   const updateImage = (i: number, v: string) =>
     setForm((f) => ({ ...f, images: f.images.map((s, idx) => (idx === i ? v : s)) }));
 
-  if (!ready) {
-    return null;
+  if (!checked || !authed) {
+    return <div className="min-h-screen bg-primary" />;
   }
+
 
   return (
     <div className="min-h-screen bg-muted/30">
