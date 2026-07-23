@@ -157,7 +157,7 @@ function ExplorarZonas() {
           <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
             <div className="relative">
               <svg
-                viewBox="0 0 700 520"
+                viewBox="0 0 800 600"
                 className="h-auto w-full"
                 role="img"
                 aria-label="Mapa de las provincias de Costa Rica"
@@ -207,8 +207,7 @@ function ExplorarZonas() {
                     <g key={s.name}>
                       <path
                         d={s.d}
-                        fill={active ? "var(--emerald)" : "oklch(0.94 0.05 140)"}
-                        stroke={active ? "var(--emerald)" : "oklch(0.45 0.06 145)"}
+                        className={`${active ? "fill-emerald stroke-emerald" : `${s.fillClass} stroke-primary/45`} transition-all`}
                         strokeWidth={isSelected ? 2.5 : active ? 2 : 1}
                         strokeLinejoin="round"
                         style={{
@@ -235,24 +234,19 @@ function ExplorarZonas() {
                         }}
                         onClick={() => selectProvincia(s.name)}
                       />
-                      {!s.hideLabel && (
-                        <text
-                          x={s.labelX}
-                          y={s.labelY}
-                          textAnchor="middle"
-                          className="pointer-events-none select-none"
-                          style={{
-                            fontFamily: "var(--font-sans)",
-                            fontSize: 12,
-                            fontWeight: 700,
-                            letterSpacing: 0.2,
-                            fill: active ? "var(--emerald-foreground)" : "oklch(0.28 0.05 230)",
-                            transition: "fill .25s ease",
-                          }}
-                        >
-                          {s.name}
-                        </text>
-                      )}
+                      <text
+                        x={s.labelX}
+                        y={s.labelY}
+                        textAnchor="middle"
+                        className={`pointer-events-none select-none font-bold ${active ? "fill-emerald-foreground" : "fill-primary"} ${s.labelClass ?? "text-xs"}`}
+                        style={{
+                          fontFamily: "var(--font-sans)",
+                          letterSpacing: 0.2,
+                          transition: "fill .25s ease",
+                        }}
+                      >
+                        {s.name}
+                      </text>
                     </g>
                   );
                 })}
