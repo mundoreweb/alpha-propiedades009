@@ -37,6 +37,16 @@
   --color-emerald: var(--emerald);
   --color-emerald-foreground: var(--emerald-foreground);
   --color-gold: var(--gold);
+  --color-map-ocean-start: var(--map-ocean-start);
+  --color-map-ocean-end: var(--map-ocean-end);
+  --color-map-neighbor: var(--map-neighbor);
+  --color-map-guanacaste: var(--map-guanacaste);
+  --color-map-alajuela: var(--map-alajuela);
+  --color-map-heredia: var(--map-heredia);
+  --color-map-limon: var(--map-limon);
+  --color-map-cartago: var(--map-cartago);
+  --color-map-sanjose: var(--map-sanjose);
+  --color-map-puntarenas: var(--map-puntarenas);
 
   --shadow-soft: 0 4px 20px -4px oklch(0.2 0.05 250 / 0.08);
   --shadow-card: 0 10px 40px -10px oklch(0.2 0.05 250 / 0.18);
@@ -76,6 +86,17 @@
   --emerald-foreground: oklch(1 0 0);
 
   --gold: oklch(0.78 0.13 80);
+
+  --map-ocean-start: oklch(0.78 0.08 210);
+  --map-ocean-end: oklch(0.48 0.13 235);
+  --map-neighbor: oklch(0.96 0.05 145);
+  --map-guanacaste: oklch(0.78 0.13 72);
+  --map-alajuela: oklch(0.66 0.19 22);
+  --map-heredia: oklch(0.68 0.18 325);
+  --map-limon: oklch(0.64 0.16 240);
+  --map-cartago: oklch(0.88 0.14 105);
+  --map-sanjose: oklch(0.73 0.12 205);
+  --map-puntarenas: oklch(0.80 0.16 158);
 
   --destructive: oklch(0.58 0.22 25);
   --destructive-foreground: oklch(1 0 0);
