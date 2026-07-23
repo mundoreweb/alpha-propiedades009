@@ -61,7 +61,8 @@ function formatPrice(usd: number) {
 
 function AdminPanel() {
   const navigate = useNavigate();
-  const [ready, setReady] = useState<boolean>(() => isAdminAuthed());
+  const [authed, setAuthed] = useState<boolean>(false);
+  const [checked, setChecked] = useState<boolean>(false);
   const [list, setList] = useState<CatalogProperty[]>(seedProperties);
   const [query, setQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
@@ -69,12 +70,15 @@ function AdminPanel() {
   const [editing, setEditing] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isAdminAuthed()) {
+    const ok = isAdminAuthed();
+    setAuthed(ok);
+    setChecked(true);
+    if (!ok) {
       navigate({ to: "/admin/login" });
-    } else if (!ready) {
-      setReady(true);
     }
-  }, [navigate, ready]);
+  }, [navigate]);
+
+
 
 
   const filtered = useMemo(() => {
