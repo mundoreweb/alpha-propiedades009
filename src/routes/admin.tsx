@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Outlet, createFileRoute, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Pencil, Trash2, Search, X, Home as HomeIcon, ShieldCheck, LogOut, ImagePlus } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
@@ -60,6 +60,16 @@ function formatPrice(usd: number) {
 }
 
 function AdminPanel() {
+  const location = useLocation();
+
+  if (location.pathname === "/admin/login") {
+    return <Outlet />;
+  }
+
+  return <AdminDashboard />;
+}
+
+function AdminDashboard() {
   const navigate = useNavigate();
   const [authed, setAuthed] = useState<boolean>(false);
   const [checked, setChecked] = useState<boolean>(false);
