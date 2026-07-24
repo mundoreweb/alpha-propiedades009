@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MapPin, Compass, Leaf, TrendingUp, Sprout, X as XIcon } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { PropertyCard } from "@/components/PropertyCard";
-import { properties, provincias } from "@/data/properties";
+import { provincias } from "@/data/properties";
+import { fetchProperties, type PropertyWithDetail } from "@/lib/properties-api";
 
 export const Route = createFileRoute("/explorar-zonas")({
   head: () => ({
