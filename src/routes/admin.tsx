@@ -1,14 +1,20 @@
 import { Outlet, createFileRoute, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Pencil, Trash2, Search, X, Home as HomeIcon, ShieldCheck, LogOut, ImagePlus } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, X, Home as HomeIcon, ShieldCheck, LogOut, ImagePlus, Loader2, Star } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import {
-  properties as seedProperties,
   provincias,
   cantonesPorProvincia,
-  type CatalogProperty,
 } from "@/data/properties";
 import { isAdminAuthed, logoutAdmin } from "@/lib/auth";
+import {
+  fetchProperties,
+  createProperty,
+  updateProperty,
+  deleteProperty,
+  toggleRentalStatus,
+  type PropertyWithDetail,
+} from "@/lib/properties-api";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -38,6 +44,7 @@ type FormState = {
   parking: string;
   images: string[];
   rentalStatus: "Disponible" | "Alquilada";
+  featured: boolean;
 };
 
 const EMPTY_FORM: FormState = {
@@ -53,6 +60,7 @@ const EMPTY_FORM: FormState = {
   parking: "",
   images: [""],
   rentalStatus: "Disponible",
+  featured: false,
 };
 
 function formatPrice(usd: number) {
@@ -73,7 +81,10 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const [authed, setAuthed] = useState<boolean>(false);
   const [checked, setChecked] = useState<boolean>(false);
-  const [list, setList] = useState<CatalogProperty[]>(seedProperties);
+  const [list, setList] = useState<PropertyWithDetail[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [saving, setSaving] = useState<boolean>(false);
   const [query, setQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
@@ -88,8 +99,27 @@ function AdminDashboard() {
     }
   }, [navigate]);
 
-
-
+  useEffect(() => {
+    if (!authed) return;
+    let cancelled = false;
+    setLoading(true);
+    fetchProperties()
+      .then((data) => {
+        if (!cancelled) {
+          setList(data);
+          setLoadError(null);
+        }
+      })
+      .catch((e) => {
+        if (!cancelled) setLoadError((e as Error).message ?? "Error al cargar propiedades");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [authed]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -108,8 +138,7 @@ function AdminDashboard() {
     setModalOpen(true);
   };
 
-  const openEdit = (p: CatalogProperty) => {
-    const existing = (p as CatalogProperty & { images?: string[] }).images;
+  const openEdit = (p: PropertyWithDetail) => {
     setForm({
       id: p.id,
       title: p.title,
@@ -117,22 +146,38 @@ function AdminDashboard() {
       type: p.type,
       provincia: p.provincia,
       canton: p.canton,
-      description: "",
+      description: p.description ?? "",
       areaNum: String(p.areaNum),
       beds: String(p.beds),
       baths: String(p.baths),
       parking: String(p.parking),
-      images: existing && existing.length > 0 ? existing : [typeof p.image === "string" ? p.image : ""],
+      images: p.images && p.images.length > 0 ? p.images : [""],
       rentalStatus: p.rentalStatus ?? "Disponible",
+      featured: !!p.featured,
     });
     setEditing(p.id);
     setModalOpen(true);
   };
 
-
-  const handleDelete = (id: string) => {
-    if (confirm("¿Eliminar esta propiedad? Esta acción no se puede deshacer.")) {
+  const handleDelete = async (id: string) => {
+    if (!confirm("¿Eliminar esta propiedad? Esta acción no se puede deshacer.")) return;
+    try {
+      await deleteProperty(id);
       setList((prev) => prev.filter((p) => p.id !== id));
+    } catch (e) {
+      alert("Error al eliminar: " + ((e as Error).message ?? "desconocido"));
+    }
+  };
+
+  const handleToggleStatus = async (p: PropertyWithDetail) => {
+    const current = p.rentalStatus ?? "Disponible";
+    const next = current === "Alquilada" ? "Disponible" : "Alquilada";
+    setList((prev) => prev.map((x) => (x.id === p.id ? { ...x, rentalStatus: next } : x)));
+    try {
+      await toggleRentalStatus(p.id, current);
+    } catch (e) {
+      setList((prev) => prev.map((x) => (x.id === p.id ? { ...x, rentalStatus: current } : x)));
+      alert("Error al cambiar estado: " + ((e as Error).message ?? "desconocido"));
     }
   };
 
@@ -141,37 +186,43 @@ function AdminDashboard() {
     navigate({ to: "/admin/login" });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const usd = Number(form.priceUSD) || 0;
     const cleanImages = form.images.map((s) => s.trim()).filter(Boolean);
-    const primary = cleanImages[0] || (seedProperties[0].image as string);
-    const item: CatalogProperty & { images?: string[] } = {
-      id: editing ?? String(Date.now()),
+    const input = {
       title: form.title,
-      location: `${form.canton}, ${form.provincia}`,
-      price: `$${usd.toLocaleString("en-US")}`,
-      priceUSD: usd,
-      period: form.type === "Alquiler" ? "mes" : undefined,
-      type: form.type,
-      provincia: form.provincia,
-      canton: form.canton,
-      beds: Number(form.beds) || 0,
-      baths: Number(form.baths) || 0,
+      description: form.description || null,
+      price: usd,
+      operation: form.type,
+      rental_status: form.type === "Alquiler" ? form.rentalStatus : ("Disponible" as const),
+      province: form.provincia,
+      city: form.canton,
+      bedrooms: Number(form.beds) || 0,
+      bathrooms: Number(form.baths) || 0,
       parking: Number(form.parking) || 0,
-      area: `${form.areaNum} m²`,
-      areaNum: Number(form.areaNum) || 0,
-      image: primary,
-      images: cleanImages.length > 0 ? cleanImages : [primary as string],
-      rentalStatus: form.type === "Alquiler" ? form.rentalStatus : undefined,
+      sqm: Number(form.areaNum) || 0,
+      images: cleanImages,
+      is_featured: form.featured,
     };
 
-    setList((prev) =>
-      editing ? prev.map((p) => (p.id === editing ? item : p)) : [item, ...prev],
-    );
-    setModalOpen(false);
-    setEditing(null);
-    setForm(EMPTY_FORM);
+    setSaving(true);
+    try {
+      if (editing) {
+        const updated = await updateProperty(editing, input);
+        setList((prev) => prev.map((p) => (p.id === editing ? updated : p)));
+      } else {
+        const created = await createProperty(input);
+        setList((prev) => [created, ...prev]);
+      }
+      setModalOpen(false);
+      setEditing(null);
+      setForm(EMPTY_FORM);
+    } catch (err) {
+      alert("Error al guardar: " + ((err as Error).message ?? "desconocido"));
+    } finally {
+      setSaving(false);
+    }
   };
 
   const cantones = cantonesPorProvincia[form.provincia] ?? [];
@@ -189,13 +240,11 @@ function AdminDashboard() {
     return <div className="min-h-screen bg-primary" />;
   }
 
-
   return (
     <div className="min-h-screen bg-muted/30">
       <Navbar />
 
       <div className="mx-auto max-w-7xl px-6 py-10">
-        {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald">
@@ -227,14 +276,12 @@ function AdminDashboard() {
           </div>
         </div>
 
-        {/* Stats */}
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
           <StatCard label="Total" value={list.length} />
           <StatCard label="En Venta" value={list.filter((p) => p.type === "Venta").length} />
           <StatCard label="En Alquiler" value={list.filter((p) => p.type === "Alquiler").length} />
         </div>
 
-        {/* Search */}
         <div className="mt-6 flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-2.5 shadow-[var(--shadow-soft)]">
           <Search className="h-4 w-4 text-muted-foreground" />
           <input
@@ -245,7 +292,12 @@ function AdminDashboard() {
           />
         </div>
 
-        {/* Table */}
+        {loadError && (
+          <div className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+            {loadError}
+          </div>
+        )}
+
         <div className="mt-6 overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-soft)]">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -261,97 +313,103 @@ function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((p) => (
-                  <tr
-                    key={p.id}
-                    className="border-t border-border transition-colors hover:bg-muted/40"
-                  >
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={typeof p.image === "string" ? p.image : (p.image as unknown as string)}
-                          alt={p.title}
-                          className="h-12 w-16 rounded-lg object-cover"
-                        />
-                        <div>
-                          <div className="font-semibold text-foreground">{p.title}</div>
-                          <div className="text-xs text-muted-foreground">ID: {p.id}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-5 py-3 text-muted-foreground">{p.location}</td>
-                    <td className="px-5 py-3">
-                      <span
-                        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                          p.type === "Venta"
-                            ? "bg-primary/10 text-primary"
-                            : "bg-emerald/15 text-emerald"
-                        }`}
-                      >
-                        {p.type}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3">
-                      {p.type === "Alquiler" ? (
-                        <button
-                          onClick={() =>
-                            setList((prev) =>
-                              prev.map((x) =>
-                                x.id === p.id
-                                  ? { ...x, rentalStatus: x.rentalStatus === "Alquilada" ? "Disponible" : "Alquilada" }
-                                  : x,
-                              ),
-                            )
-                          }
-                          title="Cambiar estado"
-                          className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${
-                            (p.rentalStatus ?? "Disponible") === "Alquilada"
-                              ? "bg-amber-500/15 text-amber-700 hover:bg-amber-500/25 dark:text-amber-400"
-                              : "bg-emerald/15 text-emerald hover:bg-emerald/25"
-                          }`}
-                        >
-                          ● {p.rentalStatus ?? "Disponible"}
-                        </button>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">—</span>
-                      )}
-                    </td>
-                    <td className="px-5 py-3 font-semibold text-foreground">
-                      {formatPrice(p.priceUSD)}
-                      {p.period && (
-                        <span className="text-xs font-normal text-muted-foreground"> / {p.period}</span>
-                      )}
-                    </td>
-                    <td className="px-5 py-3 text-xs text-muted-foreground">
-                      {p.beds} hab · {p.baths} baños · {p.area}
-                    </td>
-                    <td className="px-5 py-3">
-                      <div className="flex justify-end gap-2">
-                        <button
-                          onClick={() => openEdit(p)}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary"
-                          aria-label="Editar"
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(p.id)}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-destructive hover:bg-destructive/5 hover:text-destructive"
-                          aria-label="Eliminar"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                {filtered.length === 0 && (
+                {loading ? (
                   <tr>
                     <td colSpan={7} className="px-5 py-12 text-center text-sm text-muted-foreground">
-                      <HomeIcon className="mx-auto mb-2 h-6 w-6 opacity-50" />
-                      No hay propiedades que coincidan con la búsqueda.
+                      <Loader2 className="mx-auto mb-2 h-5 w-5 animate-spin" />
+                      Cargando propiedades…
                     </td>
                   </tr>
+                ) : (
+                  <>
+                    {filtered.map((p) => (
+                      <tr
+                        key={p.id}
+                        className="border-t border-border transition-colors hover:bg-muted/40"
+                      >
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={p.image}
+                              alt={p.title}
+                              className="h-12 w-16 rounded-lg object-cover"
+                            />
+                            <div>
+                              <div className="flex items-center gap-1.5 font-semibold text-foreground">
+                                {p.title}
+                                {p.featured && <Star className="h-3.5 w-3.5 fill-emerald text-emerald" />}
+                              </div>
+                              <div className="text-xs text-muted-foreground">ID: {p.id.slice(0, 8)}…</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-5 py-3 text-muted-foreground">{p.location}</td>
+                        <td className="px-5 py-3">
+                          <span
+                            className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                              p.type === "Venta"
+                                ? "bg-primary/10 text-primary"
+                                : "bg-emerald/15 text-emerald"
+                            }`}
+                          >
+                            {p.type}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3">
+                          {p.type === "Alquiler" ? (
+                            <button
+                              onClick={() => handleToggleStatus(p)}
+                              title="Cambiar estado"
+                              className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${
+                                (p.rentalStatus ?? "Disponible") === "Alquilada"
+                                  ? "bg-amber-500/15 text-amber-700 hover:bg-amber-500/25 dark:text-amber-400"
+                                  : "bg-emerald/15 text-emerald hover:bg-emerald/25"
+                              }`}
+                            >
+                              ● {p.rentalStatus ?? "Disponible"}
+                            </button>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">—</span>
+                          )}
+                        </td>
+                        <td className="px-5 py-3 font-semibold text-foreground">
+                          {formatPrice(p.priceUSD)}
+                          {p.period && (
+                            <span className="text-xs font-normal text-muted-foreground"> / {p.period}</span>
+                          )}
+                        </td>
+                        <td className="px-5 py-3 text-xs text-muted-foreground">
+                          {p.beds} hab · {p.baths} baños · {p.area}
+                        </td>
+                        <td className="px-5 py-3">
+                          <div className="flex justify-end gap-2">
+                            <button
+                              onClick={() => openEdit(p)}
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary"
+                              aria-label="Editar"
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(p.id)}
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-destructive hover:bg-destructive/5 hover:text-destructive"
+                              aria-label="Eliminar"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {filtered.length === 0 && (
+                      <tr>
+                        <td colSpan={7} className="px-5 py-12 text-center text-sm text-muted-foreground">
+                          <HomeIcon className="mx-auto mb-2 h-6 w-6 opacity-50" />
+                          No hay propiedades que coincidan con la búsqueda.
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 )}
               </tbody>
             </table>
@@ -359,7 +417,6 @@ function AdminDashboard() {
         </div>
       </div>
 
-      {/* Modal */}
       {modalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4 backdrop-blur-sm"
@@ -516,7 +573,16 @@ function AdminDashboard() {
                 </Field>
               </div>
 
-              {/* Multiple images */}
+              <label className="flex items-center gap-2 rounded-xl border border-border bg-background px-3.5 py-2.5">
+                <input
+                  type="checkbox"
+                  checked={form.featured}
+                  onChange={(e) => setForm({ ...form, featured: e.target.checked })}
+                  className="h-4 w-4 rounded border-border text-emerald focus:ring-emerald"
+                />
+                <span className="text-sm text-foreground">Marcar como Destacada</span>
+              </label>
+
               <div>
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -592,8 +658,10 @@ function AdminDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                  disabled={saving}
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
                 >
+                  {saving && <Loader2 className="h-4 w-4 animate-spin" />}
                   {editing ? "Guardar cambios" : "Publicar propiedad"}
                 </button>
               </div>
