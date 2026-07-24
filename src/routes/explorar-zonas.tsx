@@ -120,16 +120,29 @@ function ExplorarZonas() {
   const [hovered, setHovered] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number } | null>(null);
+  const [items, setItems] = useState<PropertyWithDetail[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchProperties()
+      .then((data) => {
+        if (!cancelled) setItems(data);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const selectProvincia = (name: string) => {
     setSelected((prev) => (prev === name ? null : name));
   };
 
   const countByProvincia = (name: string) =>
-    properties.filter((p) => p.provincia === name).length;
+    items.filter((p) => p.provincia === name).length;
 
   const selectedProperties = selected
-    ? properties.filter((p) => p.provincia === selected)
+    ? items.filter((p) => p.provincia === selected)
     : [];
 
   return (
