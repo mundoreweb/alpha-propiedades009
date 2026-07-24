@@ -1,15 +1,15 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
-import { SlidersHorizontal, X } from "lucide-react";
+import { Loader2, SlidersHorizontal, X } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Slider } from "@/components/ui/slider";
 import {
-  properties,
   provincias,
   cantonesPorProvincia,
 } from "@/data/properties";
+import { fetchProperties, type PropertyWithDetail } from "@/lib/properties-api";
 
 const searchSchema = z.object({
   modo: z.enum(["todas", "venta", "alquiler"]).catch("todas").default("todas"),
