@@ -219,7 +219,15 @@ function Propiedades() {
               </p>
             </div>
 
-            {filtered.length === 0 ? (
+            {loading ? (
+              <div className="flex items-center justify-center rounded-3xl border border-border bg-card/50 p-16 text-muted-foreground">
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Cargando propiedades…
+              </div>
+            ) : loadError ? (
+              <div className="rounded-3xl border border-destructive/40 bg-destructive/5 p-8 text-center text-sm text-destructive">
+                {loadError}
+              </div>
+            ) : filtered.length === 0 ? (
               <div className="rounded-3xl border border-dashed border-border bg-card/50 p-16 text-center">
                 <p className="text-base font-semibold text-foreground">No encontramos propiedades</p>
                 <p className="mt-1 text-sm text-muted-foreground">Intenta ajustar los filtros para ver más resultados.</p>
