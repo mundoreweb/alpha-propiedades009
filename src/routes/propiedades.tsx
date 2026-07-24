@@ -33,6 +33,10 @@ function Propiedades() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/propiedades" });
 
+  const [items, setItems] = useState<PropertyWithDetail[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   const [modo, setModo] = useState<"todas" | "venta" | "alquiler">(search.modo);
   const [provincia, setProvincia] = useState<string>(search.provincia);
   const [canton, setCanton] = useState<string>("Todos");
@@ -43,10 +47,31 @@ function Propiedades() {
   const [area, setArea] = useState<[number, number]>([0, 600]);
   const [openMobile, setOpenMobile] = useState(false);
 
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    fetchProperties()
+      .then((data) => {
+        if (!cancelled) {
+          setItems(data);
+          setLoadError(null);
+        }
+      })
+      .catch((e) => {
+        if (!cancelled) setLoadError((e as Error).message ?? "Error al cargar");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const cantones = provincia !== "Todas" ? cantonesPorProvincia[provincia] ?? [] : [];
 
   const filtered = useMemo(() => {
-    return properties.filter((p) => {
+    return items.filter((p) => {
       if (modo !== "todas" && p.type.toLowerCase() !== modo) return false;
       if (provincia !== "Todas" && p.provincia !== provincia) return false;
       if (canton !== "Todos" && p.canton !== canton) return false;
@@ -59,7 +84,7 @@ function Propiedades() {
       if (p.areaNum < area[0] || p.areaNum > area[1]) return false;
       return true;
     });
-  }, [modo, provincia, canton, price, beds, baths, parking, area]);
+  }, [items, modo, provincia, canton, price, beds, baths, parking, area]);
 
   const resetFilters = () => {
     setModo("todas"); setProvincia("Todas"); setCanton("Todos");
