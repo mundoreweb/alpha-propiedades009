@@ -1,5 +1,5 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   BedDouble,
@@ -12,73 +12,93 @@ import {
   ChevronRight,
   Heart,
   Share2,
+  Loader2,
 } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { PropertyCard } from "@/components/PropertyCard";
-import { properties } from "@/data/properties";
+import { fetchPropertyById, fetchProperties, type PropertyWithDetail } from "@/lib/properties-api";
 
 const WHATSAPP_NUMBER = "50688888888"; // Ninoska (simulado)
 
 export const Route = createFileRoute("/propiedad/$id")({
-  loader: ({ params }) => {
-    const property = properties.find((p) => p.id === params.id);
-    if (!property) throw notFound();
-    return { property };
-  },
-  head: ({ loaderData }) => ({
+  head: () => ({
     meta: [
-      { title: `${loaderData?.property.title ?? "Propiedad"} — Alpha Propiedades` },
-      {
-        name: "description",
-        content: loaderData?.property
-          ? `${loaderData.property.title} en ${loaderData.property.location}. ${loaderData.property.type} — ${loaderData.property.price}.`
-          : "Detalle de propiedad",
-      },
+      { title: "Propiedad — Alpha Propiedades" },
+      { name: "description", content: "Detalle de propiedad en Alpha Propiedades." },
     ],
   }),
-  notFoundComponent: () => (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="mx-auto max-w-3xl px-6 py-24 text-center">
-        <h1 className="text-3xl font-bold text-foreground">Propiedad no encontrada</h1>
-        <p className="mt-2 text-muted-foreground">La propiedad que buscas no está disponible.</p>
-        <Link
-          to="/propiedades"
-          search={{ modo: "todas", provincia: "Todas" }}
-          className="mt-6 inline-flex rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
-        >
-          Volver al catálogo
-        </Link>
-      </div>
-    </div>
-  ),
-  errorComponent: ({ error, reset }) => (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="mx-auto max-w-3xl px-6 py-24 text-center">
-        <h1 className="text-2xl font-bold">Ocurrió un error</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
-        <button onClick={reset} className="mt-6 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">
-          Reintentar
-        </button>
-      </div>
-    </div>
-  ),
   component: PropertyDetail,
 });
 
 function PropertyDetail() {
-  const { property } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const [property, setProperty] = useState<PropertyWithDetail | null>(null);
+  const [related, setRelated] = useState<PropertyWithDetail[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [activeIdx, setActiveIdx] = useState(0);
 
-  // Build a gallery using available property images (simulated with multiple shots)
-  const allImages = Array.from(new Set(properties.map((p) => p.image)));
-  const gallery = [
-    property.image,
-    ...allImages.filter((img) => img !== property.image).slice(0, 4),
-  ];
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setNotFound(false);
+    setActiveIdx(0);
+    (async () => {
+      try {
+        const p = await fetchPropertyById(id);
+        if (cancelled) return;
+        if (!p) {
+          setNotFound(true);
+          setProperty(null);
+        } else {
+          setProperty(p);
+          const all = await fetchProperties();
+          if (!cancelled) {
+            setRelated(all.filter((r) => r.id !== p.id && r.provincia === p.provincia).slice(0, 3));
+          }
+        }
+      } catch {
+        if (!cancelled) setNotFound(true);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
-  const related = properties.filter((p) => p.id !== property.id && p.provincia === property.provincia).slice(0, 3);
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="flex items-center justify-center px-6 py-24 text-muted-foreground">
+          <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Cargando propiedad…
+        </div>
+      </div>
+    );
+  }
+
+  if (notFound || !property) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="mx-auto max-w-3xl px-6 py-24 text-center">
+          <h1 className="text-3xl font-bold text-foreground">Propiedad no encontrada</h1>
+          <p className="mt-2 text-muted-foreground">La propiedad que buscas no está disponible.</p>
+          <Link
+            to="/propiedades"
+            search={{ modo: "todas", provincia: "Todas" }}
+            className="mt-6 inline-flex rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+          >
+            Volver al catálogo
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const gallery = property.images && property.images.length > 0 ? property.images : [property.image];
 
   const message = `Hola Ninoska, estoy interesado en la propiedad ${property.title} ubicada en ${property.location} con un precio de ${property.price}${property.period ? ` / ${property.period}` : ""}. Me gustaría recibir más información.`;
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
@@ -101,7 +121,6 @@ function PropertyDetail() {
       </div>
 
       <div className="mx-auto max-w-7xl px-6 pb-16">
-        {/* Header */}
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <div className="flex flex-wrap items-center gap-2">
@@ -141,7 +160,6 @@ function PropertyDetail() {
           </div>
         </div>
 
-        {/* Gallery */}
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_320px]">
           <div className="relative overflow-hidden rounded-3xl bg-muted">
             <img
@@ -161,20 +179,24 @@ function PropertyDetail() {
                 </div>
               </>
             )}
-            <button
-              onClick={prev}
-              aria-label="Anterior"
-              className="absolute left-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-card/95 text-foreground shadow-md backdrop-blur hover:bg-card"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              onClick={next}
-              aria-label="Siguiente"
-              className="absolute right-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-card/95 text-foreground shadow-md backdrop-blur hover:bg-card"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
+            {gallery.length > 1 && (
+              <>
+                <button
+                  onClick={prev}
+                  aria-label="Anterior"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-card/95 text-foreground shadow-md backdrop-blur hover:bg-card"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={next}
+                  aria-label="Siguiente"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-card/95 text-foreground shadow-md backdrop-blur hover:bg-card"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </>
+            )}
             <div className="absolute bottom-4 right-4 rounded-full bg-foreground/70 px-3 py-1 text-xs font-medium text-background">
               {activeIdx + 1} / {gallery.length}
             </div>
@@ -194,10 +216,8 @@ function PropertyDetail() {
           </div>
         </div>
 
-        {/* Content + sidebar */}
         <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px]">
           <div>
-            {/* Specs */}
             <section>
               <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Características
@@ -210,33 +230,31 @@ function PropertyDetail() {
               </div>
             </section>
 
-            {/* Description */}
             <section className="mt-10">
               <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Descripción
               </h2>
               <div className="mt-4 space-y-4 text-base leading-relaxed text-foreground/90">
-                <p>
-                  Descubre <strong>{property.title}</strong>, una propiedad excepcional ubicada en{" "}
-                  {property.canton}, una de las zonas más atractivas de {property.provincia}, Costa Rica.
-                  Esta {property.type === "Venta" ? "exclusiva propiedad en venta" : "magnífica propiedad en alquiler"} ofrece{" "}
-                  {property.area} de espacio diseñado con acabados modernos, abundante luz natural y vistas privilegiadas.
-                </p>
-                <p>
-                  Cuenta con {property.beds} amplias habitaciones, {property.baths} baños completos y{" "}
-                  {property.parking} espacios de estacionamiento. Los espacios sociales fluyen hacia áreas exteriores
-                  perfectas para disfrutar del clima tropical costarricense, mientras que la cocina abierta de estilo
-                  europeo se integra al comedor y la sala principal.
-                </p>
-                <p>
-                  La ubicación combina la tranquilidad de un entorno natural con la cercanía a comercios, restaurantes
-                  y vías principales. Una oportunidad única para vivir el auténtico estilo Pura Vida con todas las
-                  comodidades modernas que tu familia merece.
-                </p>
+                {property.description ? (
+                  <p className="whitespace-pre-line">{property.description}</p>
+                ) : (
+                  <>
+                    <p>
+                      Descubre <strong>{property.title}</strong>, una propiedad excepcional ubicada en{" "}
+                      {property.canton}, una de las zonas más atractivas de {property.provincia}, Costa Rica.
+                      Esta {property.type === "Venta" ? "exclusiva propiedad en venta" : "magnífica propiedad en alquiler"} ofrece{" "}
+                      {property.area} de espacio diseñado con acabados modernos, abundante luz natural y vistas privilegiadas.
+                    </p>
+                    <p>
+                      Cuenta con {property.beds} amplias habitaciones, {property.baths} baños completos y{" "}
+                      {property.parking} espacios de estacionamiento. Los espacios sociales fluyen hacia áreas exteriores
+                      perfectas para disfrutar del clima tropical costarricense.
+                    </p>
+                  </>
+                )}
               </div>
             </section>
 
-            {/* Location summary */}
             <section className="mt-10">
               <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Ubicación
@@ -253,7 +271,6 @@ function PropertyDetail() {
             </section>
           </div>
 
-          {/* Sticky contact card */}
           <aside>
             <div className="sticky top-24 overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-card)]">
               <div className="p-6">
@@ -287,7 +304,6 @@ function PropertyDetail() {
           </aside>
         </div>
 
-        {/* Related */}
         {related.length > 0 && (
           <section className="mt-16">
             <h2 className="text-2xl font-bold tracking-tight text-foreground">
@@ -300,7 +316,6 @@ function PropertyDetail() {
         )}
       </div>
 
-      {/* Floating WhatsApp button (mobile) */}
       <a
         href={whatsappUrl}
         target="_blank"

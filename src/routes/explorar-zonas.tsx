@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MapPin, Compass, Leaf, TrendingUp, Sprout, X as XIcon } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { PropertyCard } from "@/components/PropertyCard";
-import { properties, provincias } from "@/data/properties";
+import { provincias } from "@/data/properties";
+import { fetchProperties, type PropertyWithDetail } from "@/lib/properties-api";
 
 export const Route = createFileRoute("/explorar-zonas")({
   head: () => ({
@@ -119,16 +120,29 @@ function ExplorarZonas() {
   const [hovered, setHovered] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number } | null>(null);
+  const [items, setItems] = useState<PropertyWithDetail[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchProperties()
+      .then((data) => {
+        if (!cancelled) setItems(data);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const selectProvincia = (name: string) => {
     setSelected((prev) => (prev === name ? null : name));
   };
 
   const countByProvincia = (name: string) =>
-    properties.filter((p) => p.provincia === name).length;
+    items.filter((p) => p.provincia === name).length;
 
   const selectedProperties = selected
-    ? properties.filter((p) => p.provincia === selected)
+    ? items.filter((p) => p.provincia === selected)
     : [];
 
   return (

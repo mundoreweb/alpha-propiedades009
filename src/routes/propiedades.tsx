@@ -1,15 +1,15 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
-import { SlidersHorizontal, X } from "lucide-react";
+import { Loader2, SlidersHorizontal, X } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Slider } from "@/components/ui/slider";
 import {
-  properties,
   provincias,
   cantonesPorProvincia,
 } from "@/data/properties";
+import { fetchProperties, type PropertyWithDetail } from "@/lib/properties-api";
 
 const searchSchema = z.object({
   modo: z.enum(["todas", "venta", "alquiler"]).catch("todas").default("todas"),
@@ -33,6 +33,10 @@ function Propiedades() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/propiedades" });
 
+  const [items, setItems] = useState<PropertyWithDetail[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   const [modo, setModo] = useState<"todas" | "venta" | "alquiler">(search.modo);
   const [provincia, setProvincia] = useState<string>(search.provincia);
   const [canton, setCanton] = useState<string>("Todos");
@@ -43,10 +47,31 @@ function Propiedades() {
   const [area, setArea] = useState<[number, number]>([0, 600]);
   const [openMobile, setOpenMobile] = useState(false);
 
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    fetchProperties()
+      .then((data) => {
+        if (!cancelled) {
+          setItems(data);
+          setLoadError(null);
+        }
+      })
+      .catch((e) => {
+        if (!cancelled) setLoadError((e as Error).message ?? "Error al cargar");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const cantones = provincia !== "Todas" ? cantonesPorProvincia[provincia] ?? [] : [];
 
   const filtered = useMemo(() => {
-    return properties.filter((p) => {
+    return items.filter((p) => {
       if (modo !== "todas" && p.type.toLowerCase() !== modo) return false;
       if (provincia !== "Todas" && p.provincia !== provincia) return false;
       if (canton !== "Todos" && p.canton !== canton) return false;
@@ -59,7 +84,7 @@ function Propiedades() {
       if (p.areaNum < area[0] || p.areaNum > area[1]) return false;
       return true;
     });
-  }, [modo, provincia, canton, price, beds, baths, parking, area]);
+  }, [items, modo, provincia, canton, price, beds, baths, parking, area]);
 
   const resetFilters = () => {
     setModo("todas"); setProvincia("Todas"); setCanton("Todos");
@@ -194,7 +219,15 @@ function Propiedades() {
               </p>
             </div>
 
-            {filtered.length === 0 ? (
+            {loading ? (
+              <div className="flex items-center justify-center rounded-3xl border border-border bg-card/50 p-16 text-muted-foreground">
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Cargando propiedades…
+              </div>
+            ) : loadError ? (
+              <div className="rounded-3xl border border-destructive/40 bg-destructive/5 p-8 text-center text-sm text-destructive">
+                {loadError}
+              </div>
+            ) : filtered.length === 0 ? (
               <div className="rounded-3xl border border-dashed border-border bg-card/50 p-16 text-center">
                 <p className="text-base font-semibold text-foreground">No encontramos propiedades</p>
                 <p className="mt-1 text-sm text-muted-foreground">Intenta ajustar los filtros para ver más resultados.</p>
