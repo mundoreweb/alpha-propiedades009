@@ -764,3 +764,131 @@ function StatCard({ label, value }: { label: string; value: number }) {
     </div>
   );
 }
+
+function SettingsSection() {
+  const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SETTINGS);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchSiteSettings()
+      .then((s) => {
+        if (!cancelled) setSettings(s);
+      })
+      .catch((e) => {
+        if (!cancelled) setError((e as Error).message ?? "Error al cargar la configuración");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+    setSaved(false);
+    try {
+      const updated = await updateSiteSettings({
+        whatsapp_number: settings.whatsapp_number,
+        whatsapp_message: settings.whatsapp_message,
+        contact_email: settings.contact_email,
+        office_address: settings.office_address,
+      });
+      setSettings(updated);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      setError("Error al guardar: " + ((err as Error).message ?? "desconocido"));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <section className="mt-10 rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
+      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald">
+        <Settings2 className="h-4 w-4" />
+        Configuración Contacto
+      </div>
+      <h2 className="mt-2 text-xl font-bold tracking-tight text-foreground">
+        Datos de contacto del sitio
+      </h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Estos datos alimentan todos los botones de WhatsApp y enlaces de contacto del sitio.
+      </p>
+
+      {loading ? (
+        <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" /> Cargando configuración…
+        </div>
+      ) : (
+        <form onSubmit={onSubmit} className="mt-6 space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Número de WhatsApp (con código país)">
+              <input
+                value={settings.whatsapp_number}
+                onChange={(e) => setSettings({ ...settings, whatsapp_number: e.target.value })}
+                className={inputClass}
+                placeholder="50688888888"
+              />
+            </Field>
+            <Field label="Correo de contacto">
+              <input
+                type="email"
+                value={settings.contact_email}
+                onChange={(e) => setSettings({ ...settings, contact_email: e.target.value })}
+                className={inputClass}
+                placeholder="info@alphapropiedades.cr"
+              />
+            </Field>
+          </div>
+          <Field label="Mensaje predeterminado de WhatsApp">
+            <textarea
+              rows={2}
+              value={settings.whatsapp_message}
+              onChange={(e) => setSettings({ ...settings, whatsapp_message: e.target.value })}
+              className={`${inputClass} resize-none`}
+            />
+          </Field>
+          <Field label="Dirección de la oficina">
+            <input
+              value={settings.office_address}
+              onChange={(e) => setSettings({ ...settings, office_address: e.target.value })}
+              className={inputClass}
+              placeholder="San José, Costa Rica"
+            />
+          </Field>
+
+          {error && (
+            <p className="rounded-xl border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              {error}
+            </p>
+          )}
+
+          <div className="flex items-center justify-end gap-3">
+            {saved && (
+              <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald">
+                <Check className="h-4 w-4" /> Guardado
+              </span>
+            )}
+            <button
+              type="submit"
+              disabled={saving}
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+            >
+              {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+              Guardar configuración
+            </button>
+          </div>
+        </form>
+      )}
+    </section>
+  );
+}
