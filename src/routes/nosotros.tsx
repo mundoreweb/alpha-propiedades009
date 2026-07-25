@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Heart, Compass, ShieldCheck, Sparkles, MessageCircle } from "lucide-react";
+import { useSiteSettings } from "@/hooks/use-site-settings";
+import { buildWhatsAppUrl } from "@/lib/settings-api";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 
@@ -29,9 +31,10 @@ const stats = [
   { value: "+10", label: "Años de experiencia" },
 ];
 
-const WHATSAPP = "https://wa.me/50688888888?text=Hola%20Ninoska%2C%20me%20gustar%C3%ADa%20recibir%20asesor%C3%ADa%20de%20Alpha%20Propiedades.";
 
 function Nosotros() {
+  const { settings } = useSiteSettings();
+  const WHATSAPP = buildWhatsAppUrl(settings, "Hola Ninoska, me gustaría recibir asesoría de Alpha Propiedades.");
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
