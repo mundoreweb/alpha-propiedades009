@@ -68,6 +68,36 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          contact_email: string
+          created_at: string
+          id: number
+          office_address: string
+          updated_at: string
+          whatsapp_message: string
+          whatsapp_number: string
+        }
+        Insert: {
+          contact_email?: string
+          created_at?: string
+          id?: number
+          office_address?: string
+          updated_at?: string
+          whatsapp_message?: string
+          whatsapp_number?: string
+        }
+        Update: {
+          contact_email?: string
+          created_at?: string
+          id?: number
+          office_address?: string
+          updated_at?: string
+          whatsapp_message?: string
+          whatsapp_number?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
