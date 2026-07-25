@@ -419,6 +419,8 @@ function AdminDashboard() {
             </table>
           </div>
         </div>
+
+        <SettingsSection />
       </div>
 
       {modalOpen && (
