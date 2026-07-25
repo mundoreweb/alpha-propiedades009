@@ -185,9 +185,27 @@ function AdminDashboard() {
     }
   };
 
-  const handleLogout = () => {
-    logoutAdmin();
+  const handleLogout = async () => {
+    await logoutAdmin();
     navigate({ to: "/admin/login" });
+  };
+
+  const handleFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const arr = Array.from(files).filter((f) => f.type.startsWith("image/"));
+    if (arr.length === 0) return;
+    setUploadError(null);
+    setUploading(arr.length);
+    for (const file of arr) {
+      try {
+        const url = await uploadPropertyImage(file);
+        setForm((f) => ({ ...f, images: [...f.images.filter((s) => s.trim()), url] }));
+      } catch (err) {
+        setUploadError("Error al subir " + file.name + ": " + ((err as Error).message ?? ""));
+      } finally {
+        setUploading((n) => n - 1);
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
