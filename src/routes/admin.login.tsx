@@ -111,9 +111,10 @@ function AdminLogin() {
 
             <button
               type="submit"
-              className="w-full rounded-xl bg-emerald px-5 py-3 text-sm font-bold text-emerald-foreground transition-all hover:brightness-110"
+              disabled={submitting}
+              className="w-full rounded-xl bg-emerald px-5 py-3 text-sm font-bold text-emerald-foreground transition-all hover:brightness-110 disabled:opacity-60"
             >
-              Iniciar Sesión
+              {submitting ? "Ingresando…" : "Iniciar Sesión"}
             </button>
           </form>
 
