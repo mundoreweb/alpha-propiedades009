@@ -14,11 +14,12 @@ import {
   Share2,
   Loader2,
 } from "lucide-react";
+import { useSiteSettings } from "@/hooks/use-site-settings";
+import { buildWhatsAppUrl } from "@/lib/settings-api";
 import { Navbar } from "@/components/Navbar";
 import { PropertyCard } from "@/components/PropertyCard";
 import { fetchPropertyById, fetchProperties, type PropertyWithDetail } from "@/lib/properties-api";
 
-const WHATSAPP_NUMBER = "50688888888"; // Ninoska (simulado)
 
 export const Route = createFileRoute("/propiedad/$id")({
   head: () => ({
@@ -37,6 +38,7 @@ function PropertyDetail() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [activeIdx, setActiveIdx] = useState(0);
+  const { settings } = useSiteSettings();
 
   useEffect(() => {
     let cancelled = false;
@@ -101,7 +103,7 @@ function PropertyDetail() {
   const gallery = property.images && property.images.length > 0 ? property.images : [property.image];
 
   const message = `Hola Ninoska, estoy interesado en la propiedad ${property.title} ubicada en ${property.location} con un precio de ${property.price}${property.period ? ` / ${property.period}` : ""}. Me gustaría recibir más información.`;
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  const whatsappUrl = buildWhatsAppUrl(settings, message);
 
   const next = () => setActiveIdx((i) => (i + 1) % gallery.length);
   const prev = () => setActiveIdx((i) => (i - 1 + gallery.length) % gallery.length);

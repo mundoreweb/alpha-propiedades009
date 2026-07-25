@@ -1,21 +1,22 @@
-// Mock client-side admin auth. Demo credentials only — not for production.
-const KEY = "alpha_admin_auth";
+// Real admin authentication backed by Lovable Cloud auth.
+import { supabase } from "@/integrations/supabase/client";
+
 export const ADMIN_EMAIL = "admin@alphapropiedades.cr";
 export const ADMIN_PASSWORD = "admin123";
 
-export function isAdminAuthed(): boolean {
-  if (typeof window === "undefined") return false;
-  return window.localStorage.getItem(KEY) === "1";
+export async function isAdminAuthed(): Promise<boolean> {
+  const { data } = await supabase.auth.getUser();
+  return !!data.user;
 }
 
-export function loginAdmin(email: string, password: string): boolean {
-  if (email.trim().toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    window.localStorage.setItem(KEY, "1");
-    return true;
-  }
-  return false;
+export async function loginAdmin(email: string, password: string): Promise<boolean> {
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.trim().toLowerCase(),
+    password,
+  });
+  return !error;
 }
 
-export function logoutAdmin() {
-  if (typeof window !== "undefined") window.localStorage.removeItem(KEY);
+export async function logoutAdmin(): Promise<void> {
+  await supabase.auth.signOut();
 }

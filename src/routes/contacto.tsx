@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { MessageCircle, Phone, MapPin, Clock, ChevronDown, CheckCircle2, Send } from "lucide-react";
+import { useSiteSettings } from "@/hooks/use-site-settings";
+import { buildWhatsAppUrl } from "@/lib/settings-api";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 
@@ -16,7 +18,6 @@ export const Route = createFileRoute("/contacto")({
   component: Contacto,
 });
 
-const WA_NUMBER = "50688888888";
 
 const faqs = [
   { q: "¿Cómo agendar una visita?", a: "Escríbenos por WhatsApp o completa el formulario indicando la propiedad y tu disponibilidad. Te confirmamos la cita en menos de 24 horas." },
@@ -28,6 +29,7 @@ function Contacto() {
   const [form, setForm] = useState({ nombre: "", email: "", telefono: "", interes: "Comprar", mensaje: "" });
   const [sent, setSent] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const { settings } = useSiteSettings();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +38,7 @@ function Contacto() {
 
   const openWhatsApp = () => {
     const msg = `Hola Ninoska, soy ${form.nombre || "un cliente interesado"}. Tipo de interés: ${form.interes}. ${form.mensaje ? `Mensaje: ${form.mensaje}` : "Me gustaría más información."}`;
-    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(buildWhatsAppUrl(settings, msg), "_blank");
   };
 
   return (
@@ -65,7 +67,7 @@ function Contacto() {
             {/* Left */}
             <div className="space-y-6">
               <a
-                href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hola Ninoska, me gustaría recibir asesoría de Alpha Propiedades.")}`}
+                href={buildWhatsAppUrl(settings)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-between gap-4 rounded-2xl bg-emerald p-6 text-emerald-foreground shadow-[var(--shadow-card)] transition-transform hover:-translate-y-0.5"
@@ -88,7 +90,7 @@ function Contacto() {
                     <Phone className="h-4.5 w-4.5" />
                   </div>
                   <div className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Teléfono</div>
-                  <div className="mt-1 text-base font-semibold text-foreground">+506 8888 8888</div>
+                  <div className="mt-1 text-base font-semibold text-foreground">{formatPhone(settings.whatsapp_number)}</div>
                 </div>
                 <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-[var(--shadow-soft)]">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald/10 text-emerald">
@@ -253,4 +255,10 @@ function Field({ label, required, children }: { label: string; required?: boolea
       {children}
     </label>
   );
+}
+
+function formatPhone(raw: string) {
+  const d = (raw || "").replace(/\D/g, "");
+  if (d.length === 11 && d.startsWith("506")) return `+506 ${d.slice(3, 7)} ${d.slice(7)}`;
+  return `+${d}`;
 }
