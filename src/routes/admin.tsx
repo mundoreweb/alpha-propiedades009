@@ -1,6 +1,7 @@
 import { Outlet, createFileRoute, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Pencil, Trash2, Search, X, Home as HomeIcon, ShieldCheck, LogOut, ImagePlus, Loader2, Star } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, X, Home as HomeIcon, ShieldCheck, LogOut, ImagePlus, Loader2, Star, UploadCloud, Settings2, Check } from "lucide-react";
+import { uploadPropertyImage, fetchSiteSettings, updateSiteSettings, DEFAULT_SETTINGS, type SiteSettings } from "@/lib/settings-api";
 import { Navbar } from "@/components/Navbar";
 import {
   provincias,
