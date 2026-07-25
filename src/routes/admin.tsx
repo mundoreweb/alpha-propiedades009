@@ -91,12 +91,16 @@ function AdminDashboard() {
   const [editing, setEditing] = useState<string | null>(null);
 
   useEffect(() => {
-    const ok = isAdminAuthed();
-    setAuthed(ok);
-    setChecked(true);
-    if (!ok) {
-      navigate({ to: "/admin/login" });
-    }
+    let cancelled = false;
+    isAdminAuthed().then((ok) => {
+      if (cancelled) return;
+      setAuthed(ok);
+      setChecked(true);
+      if (!ok) navigate({ to: "/admin/login" });
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [navigate]);
 
   useEffect(() => {
