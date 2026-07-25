@@ -38,6 +38,7 @@ function PropertyDetail() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [activeIdx, setActiveIdx] = useState(0);
+  const { settings } = useSiteSettings();
 
   useEffect(() => {
     let cancelled = false;
