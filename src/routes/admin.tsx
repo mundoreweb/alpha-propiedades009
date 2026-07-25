@@ -633,12 +633,53 @@ function AdminDashboard() {
                     </div>
                   ))}
                 </div>
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setDragActive(true);
+                  }}
+                  onDragLeave={() => setDragActive(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setDragActive(false);
+                    handleFiles(e.dataTransfer.files);
+                  }}
+                  className={`mt-3 rounded-2xl border-2 border-dashed p-5 text-center transition-colors ${
+                    dragActive ? "border-emerald bg-emerald/10" : "border-emerald/40 bg-emerald/5"
+                  }`}
+                >
+                  <UploadCloud className="mx-auto h-6 w-6 text-emerald" />
+                  <p className="mt-2 text-xs font-semibold text-foreground">
+                    Arrastra tus fotos aquí o
+                  </p>
+                  <label className="mt-2 inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-emerald px-4 py-2 text-xs font-bold text-emerald-foreground transition-all hover:brightness-110">
+                    <ImagePlus className="h-3.5 w-3.5" /> Seleccionar imágenes
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => {
+                        handleFiles(e.target.files);
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
+                  {uploading > 0 && (
+                    <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" /> Subiendo {uploading} imagen(es)…
+                    </p>
+                  )}
+                  {uploadError && (
+                    <p className="mt-2 text-xs font-medium text-destructive">{uploadError}</p>
+                  )}
+                </div>
                 <button
                   type="button"
                   onClick={addImage}
                   className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-dashed border-emerald/50 bg-emerald/5 px-4 py-2 text-xs font-semibold text-emerald transition-colors hover:bg-emerald/10"
                 >
-                  <Plus className="h-3.5 w-3.5" /> Agregar otra imagen
+                  <Plus className="h-3.5 w-3.5" /> Agregar imagen por URL
                 </button>
               </div>
 
