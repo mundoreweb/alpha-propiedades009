@@ -19,18 +19,30 @@ function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (isAdminAuthed()) navigate({ to: "/admin" });
+    let cancelled = false;
+    isAdminAuthed().then((ok) => {
+      if (ok && !cancelled) navigate({ to: "/admin" });
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [navigate]);
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (loginAdmin(email, password)) {
-      navigate({ to: "/admin" });
-    } else {
-      setError("Credenciales incorrectas. Verifica tu correo y contraseña.");
+    setSubmitting(true);
+    try {
+      if (await loginAdmin(email, password)) {
+        navigate({ to: "/admin" });
+      } else {
+        setError("Credenciales incorrectas. Verifica tu correo y contraseña.");
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
