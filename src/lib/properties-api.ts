@@ -27,6 +27,7 @@ export type PropertyRow = {
   id: string;
   title: string;
   description: string | null;
+  property_code: string | null;
   price: number;
   operation: "Venta" | "Alquiler";
   rental_status: "Disponible" | "Alquilada";
