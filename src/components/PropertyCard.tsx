@@ -84,8 +84,11 @@ export function PropertyCard({ property }: { property: Property }) {
         <div className="mt-4 flex items-center gap-4 border-t border-border pt-4 text-sm text-muted-foreground">
           <Spec icon={<BedDouble className="h-4 w-4" />} value={`${property.beds}`} label="hab" />
           <Spec icon={<Bath className="h-4 w-4" />} value={`${property.baths}`} label="baños" />
-          <Spec icon={<Maximize2 className="h-4 w-4" />} value={property.area} label="" />
+          {showArea && (
+            <Spec icon={<Maximize2 className="h-4 w-4" />} value={property.area} label="" />
+          )}
         </div>
+
 
         <div className="mt-4 flex items-end justify-between">
           <div>
