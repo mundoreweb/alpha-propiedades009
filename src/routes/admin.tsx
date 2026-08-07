@@ -56,6 +56,7 @@ const EMPTY_FORM: FormState = {
   provincia: "San José",
   canton: cantonesPorProvincia["San José"][0],
   description: "",
+  propertyCode: "",
   areaNum: "",
   beds: "",
   baths: "",
