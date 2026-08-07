@@ -142,9 +142,16 @@ function PropertyDetail() {
             <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               {property.title}
             </h1>
-            <div className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
-              <MapPin className="h-4 w-4" />
-              {property.canton}, {property.provincia}
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <MapPin className="h-4 w-4" />
+                {property.canton}, {property.provincia}
+              </span>
+              {property.propertyCode && (
+                <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground">
+                  Código: {property.propertyCode}
+                </span>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-3">
