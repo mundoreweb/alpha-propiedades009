@@ -258,8 +258,8 @@ function PropertyDetail() {
                     <p>
                       Descubre <strong>{property.title}</strong>, una propiedad excepcional ubicada en{" "}
                       {property.canton}, una de las zonas más atractivas de {property.provincia}, Costa Rica.
-                      Esta {property.type === "Venta" ? "exclusiva propiedad en venta" : "magnífica propiedad en alquiler"} ofrece{" "}
-                      {property.area} de espacio diseñado con acabados modernos, abundante luz natural y vistas privilegiadas.
+                      Esta {property.type === "Venta" ? "exclusiva propiedad en venta" : "magnífica propiedad en alquiler"} ofrece
+                      {showArea ? ` ${property.area} de ` : " "}espacio diseñado con acabados modernos, abundante luz natural y vistas privilegiadas.
                     </p>
                     <p>
                       Cuenta con {property.beds} amplias habitaciones, {property.baths} baños completos y{" "}
