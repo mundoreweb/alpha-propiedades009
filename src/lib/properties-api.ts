@@ -44,6 +44,7 @@ export type PropertyRow = {
 
 export type PropertyWithDetail = CatalogProperty & {
   description?: string;
+  propertyCode?: string;
   images: string[];
 };
 
