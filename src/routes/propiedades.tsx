@@ -45,6 +45,7 @@ function Propiedades() {
   const [baths, setBaths] = useState(0);
   const [parking, setParking] = useState(0);
   const [area, setArea] = useState<[number, number]>([0, 600]);
+  const [codigo, setCodigo] = useState("");
   const [openMobile, setOpenMobile] = useState(false);
 
   useEffect(() => {
