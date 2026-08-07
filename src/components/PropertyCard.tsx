@@ -13,6 +13,7 @@ export type Property = {
   beds: number;
   baths: number;
   area: string;
+  areaNum?: number;
   image: string;
   featured?: boolean;
   rentalStatus?: RentalStatus;
