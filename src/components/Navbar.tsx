@@ -57,6 +57,7 @@ export function Navbar() {
           </button>
           <Link
             to="/propiedades"
+            search={{ modo: "todas", provincia: "Todas" }}
             className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[var(--shadow-soft)]"
           >
             Ver catálogo
