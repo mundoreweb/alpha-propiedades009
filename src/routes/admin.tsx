@@ -222,6 +222,7 @@ function AdminDashboard() {
     const input = {
       title: form.title,
       description: form.description || null,
+      property_code: form.propertyCode.trim() || null,
       price: usd,
       operation: form.type,
       rental_status: form.type === "Alquiler" ? form.rentalStatus : ("Disponible" as const),
@@ -230,7 +231,7 @@ function AdminDashboard() {
       bedrooms: Number(form.beds) || 0,
       bathrooms: Number(form.baths) || 0,
       parking: Number(form.parking) || 0,
-      sqm: Number(form.areaNum) || 0,
+      sqm: form.type === "Venta" ? Number(form.areaNum) || 0 : 0,
       images: cleanImages,
       is_featured: form.featured,
     };
