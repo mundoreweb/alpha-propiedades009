@@ -567,15 +567,18 @@ function AdminDashboard() {
               </div>
 
               <div className="grid gap-4 sm:grid-cols-4">
-                <Field label="m²">
-                  <input
-                    required
-                    type="number"
-                    value={form.areaNum}
-                    onChange={(e) => setForm({ ...form, areaNum: e.target.value })}
-                    className={inputClass}
-                  />
-                </Field>
+                {form.type === "Venta" && (
+                  <Field label="m²">
+                    <input
+                      required
+                      type="number"
+                      min="0"
+                      value={form.areaNum}
+                      onChange={(e) => setForm({ ...form, areaNum: e.target.value })}
+                      className={inputClass}
+                    />
+                  </Field>
+                )}
                 <Field label="Hab.">
                   <input
                     required
@@ -585,10 +588,12 @@ function AdminDashboard() {
                     className={inputClass}
                   />
                 </Field>
-                <Field label="Baños">
+                <Field label="Baños (admite 1.5, 2.5…)">
                   <input
                     required
                     type="number"
+                    step="0.5"
+                    min="0"
                     value={form.baths}
                     onChange={(e) => setForm({ ...form, baths: e.target.value })}
                     className={inputClass}
