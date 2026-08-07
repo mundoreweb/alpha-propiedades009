@@ -100,6 +100,7 @@ export async function fetchPropertyById(id: string): Promise<PropertyWithDetail 
 export type PropertyInput = {
   title: string;
   description?: string | null;
+  property_code?: string | null;
   price: number;
   operation: "Venta" | "Alquiler";
   rental_status: "Disponible" | "Alquilada";
