@@ -203,19 +203,22 @@ function PropertyDetail() {
               {activeIdx + 1} / {gallery.length}
             </div>
           </div>
-          <div className="grid grid-cols-4 gap-3 lg:grid-cols-2">
-            {gallery.map((img, i) => (
-              <button
-                key={img + i}
-                onClick={() => setActiveIdx(i)}
-                className={`relative overflow-hidden rounded-2xl transition-all ${
-                  activeIdx === i ? "ring-2 ring-emerald" : "opacity-80 hover:opacity-100"
-                }`}
-              >
-                <img src={img} alt={`Vista ${i + 1}`} className="aspect-square w-full object-cover" />
-              </button>
-            ))}
+          <div className="lg:relative">
+            <div className="grid grid-cols-4 gap-3 lg:absolute lg:inset-0 lg:grid-cols-2 lg:content-start lg:overflow-y-auto lg:pr-1">
+              {gallery.map((img, i) => (
+                <button
+                  key={img + i}
+                  onClick={() => setActiveIdx(i)}
+                  className={`relative overflow-hidden rounded-2xl transition-all ${
+                    activeIdx === i ? "ring-2 ring-emerald" : "opacity-80 hover:opacity-100"
+                  }`}
+                >
+                  <img src={img} alt={`Vista ${i + 1}`} className="aspect-[4/3] w-full object-cover" />
+                </button>
+              ))}
+            </div>
           </div>
+
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px]">
