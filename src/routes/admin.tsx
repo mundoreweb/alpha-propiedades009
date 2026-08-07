@@ -39,6 +39,7 @@ type FormState = {
   provincia: string;
   canton: string;
   description: string;
+  propertyCode: string;
   areaNum: string;
   beds: string;
   baths: string;
@@ -55,6 +56,7 @@ const EMPTY_FORM: FormState = {
   provincia: "San José",
   canton: cantonesPorProvincia["San José"][0],
   description: "",
+  propertyCode: "",
   areaNum: "",
   beds: "",
   baths: "",
@@ -155,6 +157,7 @@ function AdminDashboard() {
       provincia: p.provincia,
       canton: p.canton,
       description: p.description ?? "",
+      propertyCode: p.propertyCode ?? "",
       areaNum: String(p.areaNum),
       beds: String(p.beds),
       baths: String(p.baths),
@@ -219,6 +222,7 @@ function AdminDashboard() {
     const input = {
       title: form.title,
       description: form.description || null,
+      property_code: form.propertyCode.trim() || null,
       price: usd,
       operation: form.type,
       rental_status: form.type === "Alquiler" ? form.rentalStatus : ("Disponible" as const),
@@ -227,7 +231,7 @@ function AdminDashboard() {
       bedrooms: Number(form.beds) || 0,
       bathrooms: Number(form.baths) || 0,
       parking: Number(form.parking) || 0,
-      sqm: Number(form.areaNum) || 0,
+      sqm: form.type === "Venta" ? Number(form.areaNum) || 0 : 0,
       images: cleanImages,
       is_featured: form.featured,
     };
@@ -483,6 +487,15 @@ function AdminDashboard() {
                 />
               </Field>
 
+              <Field label="Código de propiedad">
+                <input
+                  value={form.propertyCode}
+                  onChange={(e) => setForm({ ...form, propertyCode: e.target.value })}
+                  className={inputClass}
+                  placeholder="Ej. 70000"
+                />
+              </Field>
+
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Operación">
                   <select
@@ -563,15 +576,18 @@ function AdminDashboard() {
               </div>
 
               <div className="grid gap-4 sm:grid-cols-4">
-                <Field label="m²">
-                  <input
-                    required
-                    type="number"
-                    value={form.areaNum}
-                    onChange={(e) => setForm({ ...form, areaNum: e.target.value })}
-                    className={inputClass}
-                  />
-                </Field>
+                {form.type === "Venta" && (
+                  <Field label="m²">
+                    <input
+                      required
+                      type="number"
+                      min="0"
+                      value={form.areaNum}
+                      onChange={(e) => setForm({ ...form, areaNum: e.target.value })}
+                      className={inputClass}
+                    />
+                  </Field>
+                )}
                 <Field label="Hab.">
                   <input
                     required
@@ -581,10 +597,12 @@ function AdminDashboard() {
                     className={inputClass}
                   />
                 </Field>
-                <Field label="Baños">
+                <Field label="Baños (admite 1.5, 2.5…)">
                   <input
                     required
                     type="number"
+                    step="0.5"
+                    min="0"
                     value={form.baths}
                     onChange={(e) => setForm({ ...form, baths: e.target.value })}
                     className={inputClass}

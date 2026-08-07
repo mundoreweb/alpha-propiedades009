@@ -45,6 +45,7 @@ function Propiedades() {
   const [baths, setBaths] = useState(0);
   const [parking, setParking] = useState(0);
   const [area, setArea] = useState<[number, number]>([0, 600]);
+  const [codigo, setCodigo] = useState("");
   const [openMobile, setOpenMobile] = useState(false);
 
   useEffect(() => {
@@ -72,6 +73,8 @@ function Propiedades() {
 
   const filtered = useMemo(() => {
     return items.filter((p) => {
+      if (codigo.trim() && !(p.propertyCode ?? "").toLowerCase().includes(codigo.trim().toLowerCase()))
+        return false;
       if (modo !== "todas" && p.type.toLowerCase() !== modo) return false;
       if (provincia !== "Todas" && p.provincia !== provincia) return false;
       if (canton !== "Todos" && p.canton !== canton) return false;
@@ -81,20 +84,29 @@ function Propiedades() {
       if (beds > 0 && p.beds < beds) return false;
       if (baths > 0 && p.baths < baths) return false;
       if (parking > 0 && p.parking < parking) return false;
-      if (p.areaNum < area[0] || p.areaNum > area[1]) return false;
+      if (p.type === "Venta" && (p.areaNum < area[0] || p.areaNum > area[1])) return false;
       return true;
     });
-  }, [items, modo, provincia, canton, price, beds, baths, parking, area]);
+  }, [items, modo, provincia, canton, price, beds, baths, parking, area, codigo]);
 
   const resetFilters = () => {
     setModo("todas"); setProvincia("Todas"); setCanton("Todos");
     setPrice([0, MAX_PRICE]); setBeds(0); setBaths(0); setParking(0);
-    setArea([0, 600]);
+    setArea([0, 600]); setCodigo("");
     navigate({ search: { modo: "todas", provincia: "Todas" } });
   };
 
   const Filters = (
     <div className="space-y-7">
+      <FilterBlock title="Código de propiedad">
+        <input
+          value={codigo}
+          onChange={(e) => setCodigo(e.target.value)}
+          placeholder="Ej. 70000"
+          className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium text-foreground focus:border-emerald focus:outline-none"
+        />
+      </FilterBlock>
+
       <FilterBlock title="Operación">
         <div className="flex gap-1 rounded-xl bg-muted p-1">
           {(["todas", "venta", "alquiler"] as const).map((m) => (

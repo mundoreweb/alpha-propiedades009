@@ -27,6 +27,7 @@ export type PropertyRow = {
   id: string;
   title: string;
   description: string | null;
+  property_code: string | null;
   price: number;
   operation: "Venta" | "Alquiler";
   rental_status: "Disponible" | "Alquilada";
@@ -43,6 +44,7 @@ export type PropertyRow = {
 
 export type PropertyWithDetail = CatalogProperty & {
   description?: string;
+  propertyCode?: string;
   images: string[];
 };
 
@@ -73,6 +75,7 @@ export function rowToProperty(row: PropertyRow): PropertyWithDetail {
     canton: row.city ?? row.province,
     rentalStatus: isRental ? row.rental_status : undefined,
     description: row.description ?? undefined,
+    propertyCode: row.property_code ?? undefined,
   };
 }
 
@@ -97,6 +100,7 @@ export async function fetchPropertyById(id: string): Promise<PropertyWithDetail 
 export type PropertyInput = {
   title: string;
   description?: string | null;
+  property_code?: string | null;
   price: number;
   operation: "Venta" | "Alquiler";
   rental_status: "Disponible" | "Alquilada";

@@ -101,6 +101,7 @@ function PropertyDetail() {
   }
 
   const gallery = property.images && property.images.length > 0 ? property.images : [property.image];
+  const showArea = property.type === "Venta" && property.areaNum > 0;
 
   const message = `Hola Ninoska, estoy interesado en la propiedad ${property.title} ubicada en ${property.location} con un precio de ${property.price}${property.period ? ` / ${property.period}` : ""}. Me gustaría recibir más información.`;
   const whatsappUrl = buildWhatsAppUrl(settings, message);
@@ -141,9 +142,16 @@ function PropertyDetail() {
             <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               {property.title}
             </h1>
-            <div className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
-              <MapPin className="h-4 w-4" />
-              {property.canton}, {property.provincia}
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <MapPin className="h-4 w-4" />
+                {property.canton}, {property.provincia}
+              </span>
+              {property.propertyCode && (
+                <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground">
+                  Código: {property.propertyCode}
+                </span>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -203,19 +211,22 @@ function PropertyDetail() {
               {activeIdx + 1} / {gallery.length}
             </div>
           </div>
-          <div className="grid grid-cols-4 gap-3 lg:grid-cols-2">
-            {gallery.map((img, i) => (
-              <button
-                key={img + i}
-                onClick={() => setActiveIdx(i)}
-                className={`relative overflow-hidden rounded-2xl transition-all ${
-                  activeIdx === i ? "ring-2 ring-emerald" : "opacity-80 hover:opacity-100"
-                }`}
-              >
-                <img src={img} alt={`Vista ${i + 1}`} className="aspect-square w-full object-cover" />
-              </button>
-            ))}
+          <div className="lg:relative">
+            <div className="grid grid-cols-4 gap-3 lg:absolute lg:inset-0 lg:grid-cols-2 lg:content-start lg:overflow-y-auto lg:pr-1">
+              {gallery.map((img, i) => (
+                <button
+                  key={img + i}
+                  onClick={() => setActiveIdx(i)}
+                  className={`relative overflow-hidden rounded-2xl transition-all ${
+                    activeIdx === i ? "ring-2 ring-emerald" : "opacity-80 hover:opacity-100"
+                  }`}
+                >
+                  <img src={img} alt={`Vista ${i + 1}`} className="aspect-[4/3] w-full object-cover" />
+                </button>
+              ))}
+            </div>
           </div>
+
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px]">
@@ -228,8 +239,11 @@ function PropertyDetail() {
                 <SpecCard icon={<BedDouble className="h-5 w-5" />} value={property.beds} label="Habitaciones" />
                 <SpecCard icon={<Bath className="h-5 w-5" />} value={property.baths} label="Baños" />
                 <SpecCard icon={<Car className="h-5 w-5" />} value={property.parking} label="Parqueos" />
-                <SpecCard icon={<Maximize2 className="h-5 w-5" />} value={property.area} label="Área" />
+                {showArea && (
+                  <SpecCard icon={<Maximize2 className="h-5 w-5" />} value={property.area} label="Área" />
+                )}
               </div>
+
             </section>
 
             <section className="mt-10">
@@ -244,8 +258,8 @@ function PropertyDetail() {
                     <p>
                       Descubre <strong>{property.title}</strong>, una propiedad excepcional ubicada en{" "}
                       {property.canton}, una de las zonas más atractivas de {property.provincia}, Costa Rica.
-                      Esta {property.type === "Venta" ? "exclusiva propiedad en venta" : "magnífica propiedad en alquiler"} ofrece{" "}
-                      {property.area} de espacio diseñado con acabados modernos, abundante luz natural y vistas privilegiadas.
+                      Esta {property.type === "Venta" ? "exclusiva propiedad en venta" : "magnífica propiedad en alquiler"} ofrece
+                      {showArea ? ` ${property.area} de ` : " "}espacio diseñado con acabados modernos, abundante luz natural y vistas privilegiadas.
                     </p>
                     <p>
                       Cuenta con {property.beds} amplias habitaciones, {property.baths} baños completos y{" "}

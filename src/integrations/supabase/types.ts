@@ -27,6 +27,7 @@ export type Database = {
           operation: string
           parking: number
           price: number
+          property_code: string | null
           province: string
           rental_status: string
           sqm: number
@@ -44,6 +45,7 @@ export type Database = {
           operation: string
           parking?: number
           price: number
+          property_code?: string | null
           province: string
           rental_status?: string
           sqm?: number
@@ -61,6 +63,7 @@ export type Database = {
           operation?: string
           parking?: number
           price?: number
+          property_code?: string | null
           province?: string
           rental_status?: string
           sqm?: number

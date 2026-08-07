@@ -13,6 +13,7 @@ export type Property = {
   beds: number;
   baths: number;
   area: string;
+  areaNum?: number;
   image: string;
   featured?: boolean;
   rentalStatus?: RentalStatus;
@@ -20,6 +21,8 @@ export type Property = {
 
 export function PropertyCard({ property }: { property: Property }) {
   const isRented = property.type === "Alquiler" && property.rentalStatus === "Alquilada";
+  const areaValue = property.areaNum ?? parseFloat(property.area);
+  const showArea = property.type === "Venta" && Number.isFinite(areaValue) && areaValue > 0;
   return (
     <article className="group overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card)]">
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -83,8 +86,11 @@ export function PropertyCard({ property }: { property: Property }) {
         <div className="mt-4 flex items-center gap-4 border-t border-border pt-4 text-sm text-muted-foreground">
           <Spec icon={<BedDouble className="h-4 w-4" />} value={`${property.beds}`} label="hab" />
           <Spec icon={<Bath className="h-4 w-4" />} value={`${property.baths}`} label="baños" />
-          <Spec icon={<Maximize2 className="h-4 w-4" />} value={property.area} label="" />
+          {showArea && (
+            <Spec icon={<Maximize2 className="h-4 w-4" />} value={property.area} label="" />
+          )}
         </div>
+
 
         <div className="mt-4 flex items-end justify-between">
           <div>
