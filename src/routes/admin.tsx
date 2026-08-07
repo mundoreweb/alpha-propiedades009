@@ -487,6 +487,15 @@ function AdminDashboard() {
                 />
               </Field>
 
+              <Field label="Código de propiedad">
+                <input
+                  value={form.propertyCode}
+                  onChange={(e) => setForm({ ...form, propertyCode: e.target.value })}
+                  className={inputClass}
+                  placeholder="Ej. 70000"
+                />
+              </Field>
+
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Operación">
                   <select
