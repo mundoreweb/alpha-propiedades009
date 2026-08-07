@@ -75,6 +75,7 @@ export function rowToProperty(row: PropertyRow): PropertyWithDetail {
     canton: row.city ?? row.province,
     rentalStatus: isRental ? row.rental_status : undefined,
     description: row.description ?? undefined,
+    propertyCode: row.property_code ?? undefined,
   };
 }
 
