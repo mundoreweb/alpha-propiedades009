@@ -157,6 +157,7 @@ function AdminDashboard() {
       provincia: p.provincia,
       canton: p.canton,
       description: p.description ?? "",
+      propertyCode: p.propertyCode ?? "",
       areaNum: String(p.areaNum),
       beds: String(p.beds),
       baths: String(p.baths),
