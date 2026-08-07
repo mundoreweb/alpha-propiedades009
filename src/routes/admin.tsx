@@ -39,6 +39,7 @@ type FormState = {
   provincia: string;
   canton: string;
   description: string;
+  propertyCode: string;
   areaNum: string;
   beds: string;
   baths: string;
