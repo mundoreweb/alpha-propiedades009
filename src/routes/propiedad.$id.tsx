@@ -231,8 +231,11 @@ function PropertyDetail() {
                 <SpecCard icon={<BedDouble className="h-5 w-5" />} value={property.beds} label="Habitaciones" />
                 <SpecCard icon={<Bath className="h-5 w-5" />} value={property.baths} label="Baños" />
                 <SpecCard icon={<Car className="h-5 w-5" />} value={property.parking} label="Parqueos" />
-                <SpecCard icon={<Maximize2 className="h-5 w-5" />} value={property.area} label="Área" />
+                {showArea && (
+                  <SpecCard icon={<Maximize2 className="h-5 w-5" />} value={property.area} label="Área" />
+                )}
               </div>
+
             </section>
 
             <section className="mt-10">
