@@ -21,6 +21,8 @@ export type Property = {
 
 export function PropertyCard({ property }: { property: Property }) {
   const isRented = property.type === "Alquiler" && property.rentalStatus === "Alquilada";
+  const areaValue = property.areaNum ?? parseFloat(property.area);
+  const showArea = property.type === "Venta" && Number.isFinite(areaValue) && areaValue > 0;
   return (
     <article className="group overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card)]">
       <div className="relative aspect-[4/3] overflow-hidden">
