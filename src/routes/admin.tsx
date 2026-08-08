@@ -399,7 +399,9 @@ function AdminDashboard() {
                               ● {p.rentalStatus ?? "Disponible"}
                             </button>
                           ) : (
-                            <span className="text-xs text-muted-foreground">—</span>
+                            <span className="rounded-full bg-emerald/15 px-2.5 py-1 text-xs font-semibold text-emerald">
+                              ● Disponible
+                            </span>
                           )}
                         </td>
                         <td className="px-5 py-3 font-semibold text-foreground">
