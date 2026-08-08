@@ -168,7 +168,7 @@ function Propiedades() {
       <FilterBlock title="Características">
         <CounterRow label="Habitaciones" value={beds} onChange={setBeds} />
         <CounterRow label="Baños" value={baths} onChange={setBaths} />
-        <CounterRow label="Estacionamientos" value={parking} onChange={setParking} />
+        <CounterRow label="Parqueos" value={parking} onChange={setParking} />
       </FilterBlock>
 
       <FilterBlock title="Tamaño (m²)">
@@ -287,14 +287,15 @@ function FilterBlock({ title, children }: { title: string; children: React.React
 
 function CounterRow({ label, value, onChange }: { label: string; value: number; onChange: (n: number) => void }) {
   return (
-    <div className="mb-2 flex items-center justify-between">
-      <span className="text-sm text-foreground">{label}</span>
-      <div className="flex items-center gap-1">
+    <div className="mb-3 flex flex-col gap-1.5 w-full">
+      <span className="text-sm font-medium text-foreground">{label}</span>
+      <div className="grid grid-cols-5 gap-1 w-full">
         {[0, 1, 2, 3, 4].map((n) => (
           <button
             key={n}
+            type="button"
             onClick={() => onChange(n)}
-            className={`h-8 min-w-8 rounded-lg px-2 text-xs font-semibold transition-colors ${
+            className={`h-8 w-full rounded-lg text-xs font-semibold transition-colors flex items-center justify-center ${
               value === n
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-muted-foreground hover:bg-accent"
