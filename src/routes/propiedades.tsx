@@ -176,12 +176,12 @@ function Propiedades() {
           value={area}
           onValueChange={(v) => setArea([v[0], v[1]] as [number, number])}
           min={0}
-          max={600}
-          step={10}
+          max={MAX_AREA}
+          step={100}
         />
         <div className="mt-3 flex items-center justify-between text-xs font-medium text-muted-foreground">
-          <span>{area[0]} m²</span>
-          <span>{area[1]} m²{area[1] === 600 ? "+" : ""}</span>
+          <span>{area[0].toLocaleString()} m²</span>
+          <span>{area[1].toLocaleString()} m²{area[1] === MAX_AREA ? "+" : ""}</span>
         </div>
       </FilterBlock>
 
