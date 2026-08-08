@@ -27,7 +27,8 @@ export const Route = createFileRoute("/propiedades")({
   component: Propiedades,
 });
 
-const MAX_PRICE = 1500000;
+const MAX_PRICE = 3000000;
+const MAX_AREA = 20000;
 
 function Propiedades() {
   const search = Route.useSearch();
@@ -44,7 +45,7 @@ function Propiedades() {
   const [beds, setBeds] = useState(0);
   const [baths, setBaths] = useState(0);
   const [parking, setParking] = useState(0);
-  const [area, setArea] = useState<[number, number]>([0, 600]);
+  const [area, setArea] = useState<[number, number]>([0, MAX_AREA]);
   const [codigo, setCodigo] = useState("");
   const [openMobile, setOpenMobile] = useState(false);
 
@@ -85,7 +86,10 @@ function Propiedades() {
       if (beds > 0 && p.beds < beds) return false;
       if (baths > 0 && p.baths < baths) return false;
       if (parking > 0 && p.parking < parking) return false;
-      if (p.type === "Venta" && (p.areaNum < area[0] || p.areaNum > area[1])) return false;
+      if (p.type === "Venta") {
+        if (p.areaNum < area[0]) return false;
+        if (area[1] < MAX_AREA && p.areaNum > area[1]) return false;
+      }
       return true;
     });
   }, [items, modo, provincia, canton, price, beds, baths, parking, area, codigo]);
@@ -93,7 +97,7 @@ function Propiedades() {
   const resetFilters = () => {
     setModo("todas"); setProvincia("Todas"); setCanton("Todos");
     setPrice([0, MAX_PRICE]); setBeds(0); setBaths(0); setParking(0);
-    setArea([0, 600]); setCodigo("");
+    setArea([0, MAX_AREA]); setCodigo("");
     navigate({ search: { modo: "todas", provincia: "Todas" } });
   };
 
