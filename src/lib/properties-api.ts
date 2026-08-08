@@ -73,7 +73,7 @@ export function rowToProperty(row: PropertyRow): PropertyWithDetail {
     featured: row.is_featured,
     provincia: row.province,
     canton: row.city ?? row.province,
-    rentalStatus: isRental ? row.rental_status : undefined,
+    rentalStatus: isRental ? (row.rental_status ?? "Disponible") : "Disponible",
     description: row.description ?? undefined,
     propertyCode: row.property_code ?? undefined,
   };

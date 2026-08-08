@@ -171,7 +171,7 @@ function ExplorarZonas() {
           <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
             <div className="relative">
               <svg
-                viewBox="0 0 800 600"
+                viewBox="-14 -44 728 644"
                 className="h-auto w-full"
                 role="img"
                 aria-label="Mapa de las provincias de Costa Rica"
@@ -198,9 +198,9 @@ function ExplorarZonas() {
                   </filter>
                 </defs>
 
-                <rect x="0" y="0" width="700" height="520" fill="url(#ocean)" />
-                <rect x="0" y="0" width="700" height="520" fill="url(#waves)" />
-                <rect x="0" y="0" width="700" height="520" fill="url(#oceanGlow)" />
+                <rect x="-14" y="-44" width="728" height="644" fill="url(#ocean)" />
+                <rect x="-14" y="-44" width="728" height="644" fill="url(#waves)" />
+                <rect x="-14" y="-44" width="728" height="644" fill="url(#oceanGlow)" />
 
                 {/* Country silhouette underlay for crisp outline */}
                 <path

@@ -79,7 +79,8 @@ function Propiedades() {
       if (provincia !== "Todas" && p.provincia !== provincia) return false;
       if (canton !== "Todos" && p.canton !== canton) return false;
       if (p.type === "Venta") {
-        if (p.priceUSD < price[0] || p.priceUSD > price[1]) return false;
+        if (p.priceUSD < price[0]) return false;
+        if (price[1] < MAX_PRICE && p.priceUSD > price[1]) return false;
       }
       if (beds > 0 && p.beds < beds) return false;
       if (baths > 0 && p.baths < baths) return false;
