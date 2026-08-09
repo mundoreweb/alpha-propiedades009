@@ -92,9 +92,13 @@ export function HeroSearch() {
                 <Search className="h-5 w-5 text-muted-foreground" />
                 <input
                   type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   placeholder="Buscar por zona, propiedad, palabra clave..."
                   className="w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none"
                 />
+
               </div>
 
               <div className="flex items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-muted md:border-l md:border-border">
