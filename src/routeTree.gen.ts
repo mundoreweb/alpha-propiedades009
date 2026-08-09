@@ -9,33 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as ContactoRouteImport } from './routes/contacto'
-import { Route as ExplorarZonasRouteImport } from './routes/explorar-zonas'
-import { Route as NosotrosRouteImport } from './routes/nosotros'
 import { Route as PropiedadesRouteImport } from './routes/propiedades'
-import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as NosotrosRouteImport } from './routes/nosotros'
+import { Route as ExplorarZonasRouteImport } from './routes/explorar-zonas'
+import { Route as ContactoRouteImport } from './routes/contacto'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as PropiedadIdRouteImport } from './routes/propiedad.$id'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactoRoute = ContactoRouteImport.update({
-  id: '/contacto',
-  path: '/contacto',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExplorarZonasRoute = ExplorarZonasRouteImport.update({
-  id: '/explorar-zonas',
-  path: '/explorar-zonas',
+const PropiedadesRoute = PropiedadesRouteImport.update({
+  id: '/propiedades',
+  path: '/propiedades',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NosotrosRoute = NosotrosRouteImport.update({
@@ -43,20 +28,35 @@ const NosotrosRoute = NosotrosRouteImport.update({
   path: '/nosotros',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PropiedadesRoute = PropiedadesRouteImport.update({
-  id: '/propiedades',
-  path: '/propiedades',
+const ExplorarZonasRoute = ExplorarZonasRouteImport.update({
+  id: '/explorar-zonas',
+  path: '/explorar-zonas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactoRoute = ContactoRouteImport.update({
+  id: '/contacto',
+  path: '/contacto',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PropiedadIdRoute = PropiedadIdRouteImport.update({
+  id: '/propiedad/$id',
+  path: '/propiedad/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => AdminRoute,
-} as any)
-const PropiedadIdRoute = PropiedadIdRouteImport.update({
-  id: '/propiedad/$id',
-  path: '/propiedad/$id',
-  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -135,32 +135,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contacto': {
-      id: '/contacto'
-      path: '/contacto'
-      fullPath: '/contacto'
-      preLoaderRoute: typeof ContactoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explorar-zonas': {
-      id: '/explorar-zonas'
-      path: '/explorar-zonas'
-      fullPath: '/explorar-zonas'
-      preLoaderRoute: typeof ExplorarZonasRouteImport
+    '/propiedades': {
+      id: '/propiedades'
+      path: '/propiedades'
+      fullPath: '/propiedades'
+      preLoaderRoute: typeof PropiedadesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/nosotros': {
@@ -170,11 +149,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NosotrosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/propiedades': {
-      id: '/propiedades'
-      path: '/propiedades'
-      fullPath: '/propiedades'
-      preLoaderRoute: typeof PropiedadesRouteImport
+    '/explorar-zonas': {
+      id: '/explorar-zonas'
+      path: '/explorar-zonas'
+      fullPath: '/explorar-zonas'
+      preLoaderRoute: typeof ExplorarZonasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contacto': {
+      id: '/contacto'
+      path: '/contacto'
+      fullPath: '/contacto'
+      preLoaderRoute: typeof ContactoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/propiedad/$id': {
+      id: '/propiedad/$id'
+      path: '/propiedad/$id'
+      fullPath: '/propiedad/$id'
+      preLoaderRoute: typeof PropiedadIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/login': {
@@ -183,13 +190,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRoute
-    }
-    '/propiedad/$id': {
-      id: '/propiedad/$id'
-      path: '/propiedad/$id'
-      fullPath: '/propiedad/$id'
-      preLoaderRoute: typeof PropiedadIdRouteImport
-      parentRoute: typeof rootRouteImport
     }
   }
 }
