@@ -84,9 +84,21 @@ function Propiedades() {
   const cantones = provincia !== "Todas" ? cantonesPorProvincia[provincia] ?? [] : [];
 
   const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
     return items.filter((p) => {
       if (codigo.trim() && !(p.propertyCode ?? "").toLowerCase().includes(codigo.trim().toLowerCase()))
         return false;
+      if (q) {
+        const title = p.title.toLowerCase();
+        const match =
+          title.startsWith(q) ||
+          title.split(/\s+/).some((w) => w.startsWith(q)) ||
+          (p.propertyCode ?? "").toLowerCase().includes(q) ||
+          p.provincia.toLowerCase().includes(q) ||
+          (p.canton ?? "").toLowerCase().includes(q) ||
+          p.location.toLowerCase().includes(q);
+        if (!match) return false;
+      }
       if (modo !== "todas" && p.type.toLowerCase() !== modo) return false;
       if (provincia !== "Todas" && p.provincia !== provincia) return false;
       if (canton !== "Todos" && p.canton !== canton) return false;
@@ -103,14 +115,15 @@ function Propiedades() {
       }
       return true;
     });
-  }, [items, modo, provincia, canton, price, beds, baths, parking, area, codigo]);
+  }, [items, modo, provincia, canton, price, beds, baths, parking, area, codigo, query]);
 
   const resetFilters = () => {
     setModo("todas"); setProvincia("Todas"); setCanton("Todos");
     setPrice([0, MAX_PRICE]); setBeds(0); setBaths(0); setParking(0);
-    setArea([0, MAX_AREA]); setCodigo("");
-    navigate({ search: { modo: "todas", provincia: "Todas" } });
+    setArea([0, MAX_AREA]); setCodigo(""); setQuery("");
+    navigate({ search: { modo: "todas", provincia: "Todas", q: "" } });
   };
+
 
   const Filters = (
     <div className="space-y-7">
