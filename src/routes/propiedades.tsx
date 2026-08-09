@@ -127,6 +127,15 @@ function Propiedades() {
 
   const Filters = (
     <div className="space-y-7">
+      <FilterBlock title="Búsqueda">
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Zona, código o nombre..."
+          className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium text-foreground focus:border-emerald focus:outline-none"
+        />
+      </FilterBlock>
+
       <FilterBlock title="Código de propiedad">
         <input
           value={codigo}
