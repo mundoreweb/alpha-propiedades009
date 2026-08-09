@@ -9,33 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as PropiedadesRouteImport } from './routes/propiedades'
-import { Route as NosotrosRouteImport } from './routes/nosotros'
-import { Route as ExplorarZonasRouteImport } from './routes/explorar-zonas'
-import { Route as ContactoRouteImport } from './routes/contacto'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PropiedadIdRouteImport } from './routes/propiedad.$id'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ContactoRouteImport } from './routes/contacto'
+import { Route as ExplorarZonasRouteImport } from './routes/explorar-zonas'
+import { Route as NosotrosRouteImport } from './routes/nosotros'
+import { Route as PropiedadesRouteImport } from './routes/propiedades'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as PropiedadIdRouteImport } from './routes/propiedad.$id'
 
-const PropiedadesRoute = PropiedadesRouteImport.update({
-  id: '/propiedades',
-  path: '/propiedades',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NosotrosRoute = NosotrosRouteImport.update({
-  id: '/nosotros',
-  path: '/nosotros',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExplorarZonasRoute = ExplorarZonasRouteImport.update({
-  id: '/explorar-zonas',
-  path: '/explorar-zonas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactoRoute = ContactoRouteImport.update({
-  id: '/contacto',
-  path: '/contacto',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -43,20 +28,35 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ContactoRoute = ContactoRouteImport.update({
+  id: '/contacto',
+  path: '/contacto',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PropiedadIdRoute = PropiedadIdRouteImport.update({
-  id: '/propiedad/$id',
-  path: '/propiedad/$id',
+const ExplorarZonasRoute = ExplorarZonasRouteImport.update({
+  id: '/explorar-zonas',
+  path: '/explorar-zonas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NosotrosRoute = NosotrosRouteImport.update({
+  id: '/nosotros',
+  path: '/nosotros',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PropiedadesRoute = PropiedadesRouteImport.update({
+  id: '/propiedades',
+  path: '/propiedades',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => AdminRoute,
+} as any)
+const PropiedadIdRoute = PropiedadIdRouteImport.update({
+  id: '/propiedad/$id',
+  path: '/propiedad/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -135,32 +135,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/propiedades': {
-      id: '/propiedades'
-      path: '/propiedades'
-      fullPath: '/propiedades'
-      preLoaderRoute: typeof PropiedadesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nosotros': {
-      id: '/nosotros'
-      path: '/nosotros'
-      fullPath: '/nosotros'
-      preLoaderRoute: typeof NosotrosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explorar-zonas': {
-      id: '/explorar-zonas'
-      path: '/explorar-zonas'
-      fullPath: '/explorar-zonas'
-      preLoaderRoute: typeof ExplorarZonasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contacto': {
-      id: '/contacto'
-      path: '/contacto'
-      fullPath: '/contacto'
-      preLoaderRoute: typeof ContactoRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -170,18 +149,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/contacto': {
+      id: '/contacto'
+      path: '/contacto'
+      fullPath: '/contacto'
+      preLoaderRoute: typeof ContactoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/propiedad/$id': {
-      id: '/propiedad/$id'
-      path: '/propiedad/$id'
-      fullPath: '/propiedad/$id'
-      preLoaderRoute: typeof PropiedadIdRouteImport
+    '/explorar-zonas': {
+      id: '/explorar-zonas'
+      path: '/explorar-zonas'
+      fullPath: '/explorar-zonas'
+      preLoaderRoute: typeof ExplorarZonasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nosotros': {
+      id: '/nosotros'
+      path: '/nosotros'
+      fullPath: '/nosotros'
+      preLoaderRoute: typeof NosotrosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/propiedades': {
+      id: '/propiedades'
+      path: '/propiedades'
+      fullPath: '/propiedades'
+      preLoaderRoute: typeof PropiedadesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/login': {
@@ -190,6 +183,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/propiedad/$id': {
+      id: '/propiedad/$id'
+      path: '/propiedad/$id'
+      fullPath: '/propiedad/$id'
+      preLoaderRoute: typeof PropiedadIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -216,3 +216,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

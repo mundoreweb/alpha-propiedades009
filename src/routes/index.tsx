@@ -12,6 +12,9 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Alpha Propiedades — Bienes raíces en Costa Rica" },
       { property: "og:description", content: "Propiedades exclusivas en venta y alquiler en Costa Rica." },
     ],
+    links: [
+      { rel: "icon", type: "image/jpeg", href: "/favicon.jpg" },
+    ],
   }),
   component: Index,
 });

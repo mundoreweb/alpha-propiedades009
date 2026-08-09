@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Menu, Heart } from "lucide-react";
+import { Menu, Heart } from "lucide-react";
 import { useState } from "react";
+// 👇 Importamos el logo desde la carpeta assets
+import logoAlpha from "@/assets/logo-alpha.jpg";
 
 const navItems: Array<{
   label: string;
@@ -26,13 +28,18 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-6 py-4">
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-transform group-hover:scale-105">
-            <Home className="h-4.5 w-4.5" strokeWidth={2.5} />
-          </div>
+        {/* 👇 Marca con la imagen integrada */}
+        <Link to="/" className="flex items-center gap-3 group">
+          <img
+            src={logoAlpha}
+            alt="Alpha Propiedades"
+            className="h-10 w-10 rounded-xl object-cover transition-transform group-hover:scale-105 shadow-sm"
+          />
           <div className="flex flex-col leading-none">
             <span className="text-base font-bold tracking-tight text-foreground">Alpha</span>
-            <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-emerald">Propiedades</span>
+            <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-emerald">
+              Propiedades
+            </span>
           </div>
         </Link>
 
@@ -52,7 +59,10 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <button className="flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" aria-label="Favoritos">
+          <button
+            className="flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            aria-label="Favoritos"
+          >
             <Heart className="h-4.5 w-4.5" />
           </button>
           <Link
@@ -83,8 +93,14 @@ export function Navbar() {
                 search={item.search as never}
                 onClick={() => setOpen(false)}
                 activeOptions={{ exact: item.exact, includeSearch: false }}
-                activeProps={{ className: "rounded-lg px-3 py-2.5 text-sm font-bold text-emerald bg-emerald/10" }}
-                inactiveProps={{ className: "rounded-lg px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted" }}
+                activeProps={{
+                  className:
+                    "rounded-lg px-3 py-2.5 text-sm font-bold text-emerald bg-emerald/10",
+                }}
+                inactiveProps={{
+                  className:
+                    "rounded-lg px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted",
+                }}
               >
                 {item.label}
               </Link>
