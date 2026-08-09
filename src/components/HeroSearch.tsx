@@ -19,6 +19,7 @@ type Modo = "venta" | "alquiler";
 export function HeroSearch() {
   const [modo, setModo] = useState<Modo>("venta");
   const [provincia, setProvincia] = useState(provincias[0]);
+  const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
   const handleSearch = () => {
@@ -27,6 +28,7 @@ export function HeroSearch() {
       search: {
         modo,
         provincia: provincia === "Todas las provincias" ? "Todas" : provincia,
+        q: query.trim(),
       },
     });
   };
