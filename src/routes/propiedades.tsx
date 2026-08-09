@@ -48,7 +48,17 @@ function Propiedades() {
   const [parking, setParking] = useState(0);
   const [area, setArea] = useState<[number, number]>([0, MAX_AREA]);
   const [codigo, setCodigo] = useState("");
+  const [query, setQuery] = useState(search.q);
   const [openMobile, setOpenMobile] = useState(false);
+
+  useEffect(() => {
+    setModo(search.modo);
+    setProvincia(search.provincia);
+    setCanton("Todos");
+    setQuery(search.q);
+  }, [search.modo, search.provincia, search.q]);
+
+
 
   useEffect(() => {
     let cancelled = false;
