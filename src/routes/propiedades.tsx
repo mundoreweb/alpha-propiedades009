@@ -14,6 +14,7 @@ import { fetchProperties, type PropertyWithDetail } from "@/lib/properties-api";
 const searchSchema = z.object({
   modo: z.enum(["todas", "venta", "alquiler"]).catch("todas").default("todas"),
   provincia: z.string().catch("Todas").default("Todas"),
+  q: z.string().catch("").default(""),
 });
 
 export const Route = createFileRoute("/propiedades")({
