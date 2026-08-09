@@ -14,6 +14,7 @@ import { fetchProperties, type PropertyWithDetail } from "@/lib/properties-api";
 const searchSchema = z.object({
   modo: z.enum(["todas", "venta", "alquiler"]).catch("todas").default("todas"),
   provincia: z.string().catch("Todas").default("Todas"),
+  q: z.string().catch("").default(""),
 });
 
 export const Route = createFileRoute("/propiedades")({
@@ -47,7 +48,17 @@ function Propiedades() {
   const [parking, setParking] = useState(0);
   const [area, setArea] = useState<[number, number]>([0, MAX_AREA]);
   const [codigo, setCodigo] = useState("");
+  const [query, setQuery] = useState(search.q);
   const [openMobile, setOpenMobile] = useState(false);
+
+  useEffect(() => {
+    setModo(search.modo);
+    setProvincia(search.provincia);
+    setCanton("Todos");
+    setQuery(search.q);
+  }, [search.modo, search.provincia, search.q]);
+
+
 
   useEffect(() => {
     let cancelled = false;
@@ -73,9 +84,21 @@ function Propiedades() {
   const cantones = provincia !== "Todas" ? cantonesPorProvincia[provincia] ?? [] : [];
 
   const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
     return items.filter((p) => {
       if (codigo.trim() && !(p.propertyCode ?? "").toLowerCase().includes(codigo.trim().toLowerCase()))
         return false;
+      if (q) {
+        const title = p.title.toLowerCase();
+        const match =
+          title.startsWith(q) ||
+          title.split(/\s+/).some((w) => w.startsWith(q)) ||
+          (p.propertyCode ?? "").toLowerCase().includes(q) ||
+          p.provincia.toLowerCase().includes(q) ||
+          (p.canton ?? "").toLowerCase().includes(q) ||
+          p.location.toLowerCase().includes(q);
+        if (!match) return false;
+      }
       if (modo !== "todas" && p.type.toLowerCase() !== modo) return false;
       if (provincia !== "Todas" && p.provincia !== provincia) return false;
       if (canton !== "Todos" && p.canton !== canton) return false;
@@ -92,17 +115,27 @@ function Propiedades() {
       }
       return true;
     });
-  }, [items, modo, provincia, canton, price, beds, baths, parking, area, codigo]);
+  }, [items, modo, provincia, canton, price, beds, baths, parking, area, codigo, query]);
 
   const resetFilters = () => {
     setModo("todas"); setProvincia("Todas"); setCanton("Todos");
     setPrice([0, MAX_PRICE]); setBeds(0); setBaths(0); setParking(0);
-    setArea([0, MAX_AREA]); setCodigo("");
-    navigate({ search: { modo: "todas", provincia: "Todas" } });
+    setArea([0, MAX_AREA]); setCodigo(""); setQuery("");
+    navigate({ search: { modo: "todas", provincia: "Todas", q: "" } });
   };
+
 
   const Filters = (
     <div className="space-y-7">
+      <FilterBlock title="Búsqueda">
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Zona, código o nombre..."
+          className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium text-foreground focus:border-emerald focus:outline-none"
+        />
+      </FilterBlock>
+
       <FilterBlock title="Código de propiedad">
         <input
           value={codigo}
