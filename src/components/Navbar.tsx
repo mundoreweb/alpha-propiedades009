@@ -67,7 +67,7 @@ export function Navbar() {
           </button>
           <Link
             to="/propiedades"
-            search={{ modo: "todas", provincia: "Todas" }}
+            search={{ modo: "todas", provincia: "Todas", q: "" } as never}
             className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[var(--shadow-soft)]"
           >
             Ver catálogo
@@ -94,8 +94,7 @@ export function Navbar() {
                 onClick={() => setOpen(false)}
                 activeOptions={{ exact: item.exact, includeSearch: false }}
                 activeProps={{
-                  className:
-                    "rounded-lg px-3 py-2.5 text-sm font-bold text-emerald bg-emerald/10",
+                  className: "rounded-lg px-3 py-2.5 text-sm font-bold text-emerald bg-emerald/10",
                 }}
                 inactiveProps={{
                   className:
