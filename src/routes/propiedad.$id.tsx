@@ -90,7 +90,7 @@ function PropertyDetail() {
           <p className="mt-2 text-muted-foreground">La propiedad que buscas no está disponible.</p>
           <Link
             to="/propiedades"
-            search={{ modo: "todas", provincia: "Todas" }}
+            search={{ modo: "todas", provincia: "Todas", q: "" }}
             className="mt-6 inline-flex rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
           >
             Volver al catálogo
@@ -116,7 +116,7 @@ function PropertyDetail() {
       <div className="mx-auto max-w-7xl px-6 py-6">
         <Link
           to="/propiedades"
-          search={{ modo: "todas", provincia: "Todas" }}
+          search={{ modo: "todas", provincia: "Todas", q: "" }}
           className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-emerald"
         >
           <ArrowLeft className="h-4 w-4" /> Volver al catálogo
