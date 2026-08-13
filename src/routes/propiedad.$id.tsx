@@ -104,7 +104,7 @@ function PropertyDetail() {
   const showArea = property.type === "Venta" && property.areaNum > 0;
 
   const codeText = property.propertyCode ? ` (Cód: ${property.propertyCode})` : "";
-const message = `Hola Ninoska, estoy interesado en la propiedad ${property.title}${codeText} ubicada en ${property.location} con un precio de ${property.price}${property.period ? ` / ${property.period}` : ""}. Me gustaría recibir más información.`;  
+  const message = `Hola Alpha Propiedades009, estoy interesado en la propiedad ${property.title}${codeText} ubicada en ${property.location} con un precio de ${property.price}${property.period ? ` / ${property.period}` : ""}. Me gustaría recibir más información.`;  
   const whatsappUrl = buildWhatsAppUrl(settings, message);
 
   const next = () => setActiveIdx((i) => (i + 1) % gallery.length);
