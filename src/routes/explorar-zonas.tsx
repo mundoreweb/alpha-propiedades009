@@ -10,7 +10,7 @@ import { fetchProperties, type PropertyWithDetail } from "@/lib/properties-api";
 export const Route = createFileRoute("/explorar-zonas")({
   head: () => ({
     meta: [
-      { title: "Explorar Zonas — Alpha Propiedades" },
+      { title: "Explorar Zonas — Alpha Propiedades 009" },
       {
         name: "description",
         content:

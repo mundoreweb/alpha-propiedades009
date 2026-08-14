@@ -9,9 +9,9 @@ import { Footer } from "@/components/Footer";
 export const Route = createFileRoute("/contacto")({
   head: () => ({
     meta: [
-      { title: "Contacto — Alpha Propiedades" },
-      { name: "description", content: "Ponte en contacto con Alpha Propiedades. Asesoría inmobiliaria personalizada en Costa Rica vía WhatsApp, teléfono o formulario." },
-      { property: "og:title", content: "Contacto — Alpha Propiedades" },
+      { title: "Contacto — Alpha Propiedades 009" },
+      { name: "description", content: "Ponte en contacto con Alpha Propiedades 009. Asesoría inmobiliaria personalizada en Costa Rica vía WhatsApp, teléfono o formulario." },
+      { property: "og:title", content: "Contacto — Alpha Propiedades 009" },
       { property: "og:description", content: "Da el primer paso hacia tu nueva propiedad en Costa Rica." },
     ],
   }),

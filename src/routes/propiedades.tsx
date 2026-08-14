@@ -21,7 +21,7 @@ export const Route = createFileRoute("/propiedades")({
   validateSearch: (input: Record<string, unknown>) => searchSchema.parse(input),
   head: () => ({
     meta: [
-      { title: "Propiedades — Alpha Propiedades" },
+      { title: "Propiedades — Alpha Propiedades 009" },
       { name: "description", content: "Explora y filtra propiedades en venta y alquiler en Costa Rica por provincia, precio, habitaciones y más." },
     ],
   }),
