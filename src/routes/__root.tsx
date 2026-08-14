@@ -77,17 +77,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Alpha Propiedades — Bienes raíces en Costa Rica" },
-      { name: "description", content: "Alpha Properties Costa Rica es una plataforma inmobiliaria moderna para la búsqueda y descubrimiento de propiedades." },
-      { name: "author", content: "Alpha Propiedades" },
-      { property: "og:title", content: "Alpha Propiedades — Bienes raíces en Costa Rica" },
+      { title: "Alpha Propiedades 009— Bienes raíces en Costa Rica" },
+      { name: "description", content: "Alpha Properties 009 Costa Rica es una plataforma inmobiliaria moderna para la búsqueda y descubrimiento de propiedades." },
+      { name: "author", content: "Alpha Propiedades 009" },
+      { property: "og:title", content: "Alpha Propiedades 009— Bienes raíces en Costa Rica" },
       { property: "og:description", content: "Encuentra casas, apartamentos y terrenos en venta o alquiler en Costa Rica." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Alpha Propiedades" },
+      { name: "twitter:title", content: "Alpha Propiedades 009" },
       { name: "twitter:description", content: "Encuentra casas, apartamentos y terrenos en venta o alquiler en Costa Rica." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4b53d539-26e2-492a-b0d7-43e2354b4c75/id-preview-81bb13ac--2240505a-6fe7-44b6-9040-cef0af4e0d6e.lovable.app-1780593633053.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4b53d539-26e2-492a-b0d7-43e2354b4c75/id-preview-81bb13ac--2240505a-6fe7-44b6-9040-cef0af4e0d6e.lovable.app-1780593633053.png" },
     ],
     links: [
       // 👇 1. Tu Favicon (Carga la imagen que pusiste en public/favicon.jpg)

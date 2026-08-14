@@ -13,7 +13,7 @@ export function Footer() {
             <div className="flex flex-col leading-none">
               <span className="text-base font-bold tracking-tight text-foreground">Alpha</span>
               <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-emerald">
-                Propiedades
+                Propiedades 009
               </span>
             </div>
           </div>
@@ -28,7 +28,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 flex flex-col items-start justify-between gap-3 border-t border-border/60 pt-5 text-xs text-muted-foreground sm:flex-row sm:items-center">
-          <p>© {new Date().getFullYear()} Alpha Propiedades · Costa Rica.</p>
+          <p>© {new Date().getFullYear()} Alpha Propiedades 009 · Costa Rica.</p>
           <Link
             to="/admin/login"
             className="text-[11px] tracking-wide text-muted-foreground/70 hover:text-emerald"

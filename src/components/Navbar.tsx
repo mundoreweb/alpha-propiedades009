@@ -32,13 +32,13 @@ export function Navbar() {
         <Link to="/" className="flex items-center gap-3 group">
           <img
             src={logoAlpha}
-            alt="Alpha Propiedades"
+            alt="Alpha Propiedades 009"
             className="h-10 w-10 rounded-xl object-cover transition-transform group-hover:scale-105 shadow-sm"
           />
           <div className="flex flex-col leading-none">
             <span className="text-base font-bold tracking-tight text-foreground">Alpha</span>
             <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-emerald">
-              Propiedades
+              Propiedades 009
             </span>
           </div>
         </Link>
