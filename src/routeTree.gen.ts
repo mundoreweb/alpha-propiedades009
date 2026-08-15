@@ -14,7 +14,9 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ContactoRouteImport } from './routes/contacto'
 import { Route as ExplorarZonasRouteImport } from './routes/explorar-zonas'
 import { Route as NosotrosRouteImport } from './routes/nosotros'
+import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as PropiedadesRouteImport } from './routes/propiedades'
+import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as PropiedadIdRouteImport } from './routes/propiedad.$id'
 
@@ -43,9 +45,19 @@ const NosotrosRoute = NosotrosRouteImport.update({
   path: '/nosotros',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacidadRoute = PrivacidadRouteImport.update({
+  id: '/privacidad',
+  path: '/privacidad',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PropiedadesRoute = PropiedadesRouteImport.update({
   id: '/propiedades',
   path: '/propiedades',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TerminosRoute = TerminosRouteImport.update({
+  id: '/terminos',
+  path: '/terminos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
@@ -65,7 +77,9 @@ export interface FileRoutesByFullPath {
   '/contacto': typeof ContactoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
   '/nosotros': typeof NosotrosRoute
+  '/privacidad': typeof PrivacidadRoute
   '/propiedades': typeof PropiedadesRoute
+  '/terminos': typeof TerminosRoute
   '/admin/login': typeof AdminLoginRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
@@ -75,7 +89,9 @@ export interface FileRoutesByTo {
   '/contacto': typeof ContactoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
   '/nosotros': typeof NosotrosRoute
+  '/privacidad': typeof PrivacidadRoute
   '/propiedades': typeof PropiedadesRoute
+  '/terminos': typeof TerminosRoute
   '/admin/login': typeof AdminLoginRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
@@ -86,7 +102,9 @@ export interface FileRoutesById {
   '/contacto': typeof ContactoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
   '/nosotros': typeof NosotrosRoute
+  '/privacidad': typeof PrivacidadRoute
   '/propiedades': typeof PropiedadesRoute
+  '/terminos': typeof TerminosRoute
   '/admin/login': typeof AdminLoginRoute
   '/propiedad/$id': typeof PropiedadIdRoute
 }
@@ -98,7 +116,9 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/explorar-zonas'
     | '/nosotros'
+    | '/privacidad'
     | '/propiedades'
+    | '/terminos'
     | '/admin/login'
     | '/propiedad/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -108,7 +128,9 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/explorar-zonas'
     | '/nosotros'
+    | '/privacidad'
     | '/propiedades'
+    | '/terminos'
     | '/admin/login'
     | '/propiedad/$id'
   id:
@@ -118,7 +140,9 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/explorar-zonas'
     | '/nosotros'
+    | '/privacidad'
     | '/propiedades'
+    | '/terminos'
     | '/admin/login'
     | '/propiedad/$id'
   fileRoutesById: FileRoutesById
@@ -129,7 +153,9 @@ export interface RootRouteChildren {
   ContactoRoute: typeof ContactoRoute
   ExplorarZonasRoute: typeof ExplorarZonasRoute
   NosotrosRoute: typeof NosotrosRoute
+  PrivacidadRoute: typeof PrivacidadRoute
   PropiedadesRoute: typeof PropiedadesRoute
+  TerminosRoute: typeof TerminosRoute
   PropiedadIdRoute: typeof PropiedadIdRoute
 }
 
@@ -170,11 +196,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NosotrosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacidad': {
+      id: '/privacidad'
+      path: '/privacidad'
+      fullPath: '/privacidad'
+      preLoaderRoute: typeof PrivacidadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/propiedades': {
       id: '/propiedades'
       path: '/propiedades'
       fullPath: '/propiedades'
       preLoaderRoute: typeof PropiedadesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terminos': {
+      id: '/terminos'
+      path: '/terminos'
+      fullPath: '/terminos'
+      preLoaderRoute: typeof TerminosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/login': {
@@ -210,7 +250,9 @@ const rootRouteChildren: RootRouteChildren = {
   ContactoRoute: ContactoRoute,
   ExplorarZonasRoute: ExplorarZonasRoute,
   NosotrosRoute: NosotrosRoute,
+  PrivacidadRoute: PrivacidadRoute,
   PropiedadesRoute: PropiedadesRoute,
+  TerminosRoute: TerminosRoute,
   PropiedadIdRoute: PropiedadIdRoute,
 }
 export const routeTree = rootRouteImport

@@ -27,14 +27,26 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col items-start justify-between gap-3 border-t border-border/60 pt-5 text-xs text-muted-foreground sm:flex-row sm:items-center">
+        {/* Sección inferior con Copyright y Enlaces Legales */}
+        <div className="mt-8 flex flex-col items-start justify-between gap-4 border-t border-border/60 pt-5 text-xs text-muted-foreground sm:flex-row sm:items-center">
           <p>© {new Date().getFullYear()} Alpha Propiedades 009 · Costa Rica.</p>
-          <Link
-            to="/admin/login"
-            className="text-[11px] tracking-wide text-muted-foreground/70 hover:text-emerald"
-          >
-            Acceso Administración
-          </Link>
+          
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <Link to="/privacidad" className="hover:text-foreground transition-colors">
+              Política de Privacidad
+            </Link>
+            <span className="text-muted-foreground/40">•</span>
+            <Link to="/terminos" className="hover:text-foreground transition-colors">
+              Términos y Condiciones
+            </Link>
+            <span className="text-muted-foreground/40">•</span>
+            <Link
+              to="/admin/login"
+              className="text-[11px] tracking-wide text-muted-foreground/70 hover:text-emerald"
+            >
+              Acceso Administración
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
