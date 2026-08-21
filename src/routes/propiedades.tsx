@@ -136,14 +136,6 @@ function Propiedades() {
         />
       </FilterBlock>
 
-      <FilterBlock title="Código de propiedad">
-        <input
-          value={codigo}
-          onChange={(e) => setCodigo(e.target.value)}
-          placeholder="Ej. 70000"
-          className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium text-foreground focus:border-emerald focus:outline-none"
-        />
-      </FilterBlock>
 
       <FilterBlock title="Operación">
         <div className="flex gap-1 rounded-xl bg-muted p-1">
