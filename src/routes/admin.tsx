@@ -625,6 +625,16 @@ function AdminDashboard() {
                 </Field>
               </div>
 
+              <Field label="URL de Video (YouTube, Facebook Reel/Video, Vimeo o MP4)">
+                <input
+                  type="url"
+                  value={form.videoUrl}
+                  onChange={(e) => setForm({ ...form, videoUrl: e.target.value })}
+                  className={inputClass}
+                  placeholder="https://www.youtube.com/watch?v=… o https://www.facebook.com/share/r/…"
+                />
+              </Field>
+
               <label className="flex items-center gap-2 rounded-xl border border-border bg-background px-3.5 py-2.5">
                 <input
                   type="checkbox"
