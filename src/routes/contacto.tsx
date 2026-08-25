@@ -5,6 +5,7 @@ import { useSiteSettings } from "@/hooks/use-site-settings";
 import { buildWhatsAppUrl } from "@/lib/settings-api";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/contacto")({
   head: () => ({
@@ -18,7 +19,6 @@ export const Route = createFileRoute("/contacto")({
   component: Contacto,
 });
 
-
 const faqs = [
   { q: "¿Cómo agendar una visita?", a: "Escríbenos por WhatsApp o completa el formulario indicando la propiedad y tu disponibilidad. Te confirmamos la cita en menos de 24 horas." },
   { q: "¿Puedo vender mi propiedad con ustedes?", a: "Sí. Realizamos una valoración gratuita, preparamos el material fotográfico y la publicamos en nuestros canales con acompañamiento legal completo." },
@@ -28,12 +28,33 @@ const faqs = [
 function Contacto() {
   const [form, setForm] = useState({ nombre: "", email: "", telefono: "", interes: "Comprar", mensaje: "" });
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const { settings } = useSiteSettings();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSent(true);
+    setLoading(true);
+
+    try {
+     const { error } = await supabase.from("contact_messages" as any).insert([
+  {
+    nombre: form.nombre,
+    email: form.email,
+    telefono: form.telefono,
+    interes: form.interes,
+    mensaje: form.mensaje,
+  },
+]);
+
+      if (error) throw error;
+      setSent(true);
+    } catch (err) {
+      console.error("Error al guardar mensaje en Supabase:", err);
+      alert("Ocurrió un error al enviar el mensaje. Intenta nuevamente o contáctanos por WhatsApp.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const openWhatsApp = () => {
@@ -220,9 +241,10 @@ function Contacto() {
                   <div className="flex flex-col gap-3 sm:flex-row">
                     <button
                       type="submit"
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                      disabled={loading}
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
                     >
-                      <Send className="h-4 w-4" /> Enviar mensaje
+                      <Send className="h-4 w-4" /> {loading ? "Guardando..." : "Enviar mensaje"}
                     </button>
                     <button
                       type="button"
