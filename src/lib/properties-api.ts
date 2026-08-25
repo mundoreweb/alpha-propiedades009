@@ -114,6 +114,7 @@ export type PropertyInput = {
   parking: number;
   sqm: number;
   images: string[];
+  video_url?: string | null;
   is_featured?: boolean;
 };
 
