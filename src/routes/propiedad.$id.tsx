@@ -231,12 +231,12 @@ function PropertyDetail() {
               )}
 
             {/* Flechas de navegación */}
-            {gallery.length > 1 && current?.type !== "video" && (
+            {gallery.length > 1 && (
               <>
                 <button
                   onClick={prev}
                   aria-label="Anterior"
-                  className="absolute left-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-card/95 text-foreground shadow-md backdrop-blur hover:bg-card"
+                  className="absolute left-4 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-card/95 text-foreground shadow-md backdrop-blur hover:bg-card"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
