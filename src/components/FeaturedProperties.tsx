@@ -39,7 +39,7 @@ export function FeaturedProperties() {
         </div>
         <Link
           to="/propiedades"
-          search={{ modo: "todas", provincia: "Todas" }}
+          search={{ modo: "todas", provincia: "Todas", q: "" }}
           className="rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-emerald hover:text-emerald"
         >
           Ver todas las propiedades →
