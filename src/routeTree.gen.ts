@@ -17,6 +17,7 @@ import { Route as NosotrosRouteImport } from './routes/nosotros'
 import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as PropiedadesRouteImport } from './routes/propiedades'
 import { Route as TerminosRouteImport } from './routes/terminos'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminMensajesRouteImport } from './routes/admin.mensajes'
 import { Route as PropiedadIdRouteImport } from './routes/propiedad.$id'
@@ -61,6 +62,11 @@ const TerminosRoute = TerminosRouteImport.update({
   path: '/terminos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -89,10 +95,10 @@ export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
   '/admin/mensajes': typeof AdminMensajesRoute
   '/propiedad/$id': typeof PropiedadIdRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
   '/contacto': typeof ContactoRoute
   '/explorar-zonas': typeof ExplorarZonasRoute
   '/nosotros': typeof NosotrosRoute
@@ -102,6 +108,7 @@ export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/admin/mensajes': typeof AdminMensajesRoute
   '/propiedad/$id': typeof PropiedadIdRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,6 +123,7 @@ export interface FileRoutesById {
   '/admin/login': typeof AdminLoginRoute
   '/admin/mensajes': typeof AdminMensajesRoute
   '/propiedad/$id': typeof PropiedadIdRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,10 +139,10 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/mensajes'
     | '/propiedad/$id'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/contacto'
     | '/explorar-zonas'
     | '/nosotros'
@@ -144,6 +152,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/mensajes'
     | '/propiedad/$id'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/mensajes'
     | '/propiedad/$id'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -229,6 +239,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TerminosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/login'
@@ -256,11 +273,13 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMensajesRoute: typeof AdminMensajesRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   AdminMensajesRoute: AdminMensajesRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
