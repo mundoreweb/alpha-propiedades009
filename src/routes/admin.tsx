@@ -45,6 +45,7 @@ type FormState = {
   baths: string;
   parking: string;
   images: string[];
+  videoUrl: string;
   rentalStatus: "Disponible" | "Alquilada";
   featured: boolean;
 };
@@ -62,6 +63,7 @@ const EMPTY_FORM: FormState = {
   baths: "",
   parking: "",
   images: [""],
+  videoUrl: "",
   rentalStatus: "Disponible",
   featured: false,
 };
@@ -163,6 +165,7 @@ function AdminDashboard() {
       baths: String(p.baths),
       parking: String(p.parking),
       images: p.images && p.images.length > 0 ? p.images : [""],
+      videoUrl: p.videoUrl ?? "",
       rentalStatus: p.rentalStatus ?? "Disponible",
       featured: !!p.featured,
     });
@@ -233,6 +236,7 @@ function AdminDashboard() {
       parking: Number(form.parking) || 0,
       sqm: form.type === "Venta" ? Number(form.areaNum) || 0 : 0,
       images: cleanImages,
+      video_url: form.videoUrl.trim() || null,
       is_featured: form.featured,
     };
 
