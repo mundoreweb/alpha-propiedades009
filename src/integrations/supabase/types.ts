@@ -32,6 +32,7 @@ export type Database = {
           rental_status: string
           sqm: number
           title: string
+          video_url: string | null
         }
         Insert: {
           bathrooms?: number
@@ -50,6 +51,7 @@ export type Database = {
           rental_status?: string
           sqm?: number
           title: string
+          video_url?: string | null
         }
         Update: {
           bathrooms?: number
@@ -68,6 +70,7 @@ export type Database = {
           rental_status?: string
           sqm?: number
           title?: string
+          video_url?: string | null
         }
         Relationships: []
       }

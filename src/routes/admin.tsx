@@ -45,6 +45,7 @@ type FormState = {
   baths: string;
   parking: string;
   images: string[];
+  videoUrl: string;
   rentalStatus: "Disponible" | "Alquilada";
   featured: boolean;
 };
@@ -62,6 +63,7 @@ const EMPTY_FORM: FormState = {
   baths: "",
   parking: "",
   images: [""],
+  videoUrl: "",
   rentalStatus: "Disponible",
   featured: false,
 };
@@ -163,6 +165,7 @@ function AdminDashboard() {
       baths: String(p.baths),
       parking: String(p.parking),
       images: p.images && p.images.length > 0 ? p.images : [""],
+      videoUrl: p.videoUrl ?? "",
       rentalStatus: p.rentalStatus ?? "Disponible",
       featured: !!p.featured,
     });
@@ -233,6 +236,7 @@ function AdminDashboard() {
       parking: Number(form.parking) || 0,
       sqm: form.type === "Venta" ? Number(form.areaNum) || 0 : 0,
       images: cleanImages,
+      video_url: form.videoUrl.trim() || null,
       is_featured: form.featured,
     };
 
@@ -620,6 +624,16 @@ function AdminDashboard() {
                   />
                 </Field>
               </div>
+
+              <Field label="URL de Video (YouTube, Facebook Reel/Video, Vimeo o MP4)">
+                <input
+                  type="url"
+                  value={form.videoUrl}
+                  onChange={(e) => setForm({ ...form, videoUrl: e.target.value })}
+                  className={inputClass}
+                  placeholder="https://www.youtube.com/watch?v=… o https://www.facebook.com/share/r/…"
+                />
+              </Field>
 
               <label className="flex items-center gap-2 rounded-xl border border-border bg-background px-3.5 py-2.5">
                 <input

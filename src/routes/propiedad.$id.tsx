@@ -13,12 +13,14 @@ import {
   Heart,
   Share2,
   Loader2,
+  Play,
 } from "lucide-react";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { buildWhatsAppUrl } from "@/lib/settings-api";
 import { Navbar } from "@/components/Navbar";
 import { PropertyCard } from "@/components/PropertyCard";
 import { fetchPropertyById, fetchProperties, type PropertyWithDetail } from "@/lib/properties-api";
+import { getVideoEmbed, isVerticalVideo } from "@/lib/video";
 
 
 export const Route = createFileRoute("/propiedad/$id")({
@@ -100,7 +102,15 @@ function PropertyDetail() {
     );
   }
 
-  const gallery = property.images && property.images.length > 0 ? property.images : [property.image];
+  const imageList = property.images && property.images.length > 0 ? property.images : [property.image];
+  const embed = getVideoEmbed(property.videoUrl);
+  const vertical = isVerticalVideo(property.videoUrl);
+  type Slide = { type: "video" } | { type: "image"; src: string };
+  const gallery: Slide[] = [
+    ...(embed ? [{ type: "video" as const }] : []),
+    ...imageList.map((src) => ({ type: "image" as const, src })),
+  ];
+  const current = gallery[activeIdx] ?? gallery[0];
   const showArea = property.type === "Venta" && property.areaNum > 0;
 
   const codeText = property.propertyCode ? ` (Cód: ${property.propertyCode})` : "";
@@ -173,14 +183,32 @@ function PropertyDetail() {
 
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_320px]">
           <div className="relative overflow-hidden rounded-3xl bg-muted">
-            <img
-              src={gallery[activeIdx]}
-              alt={property.title}
-              className={`aspect-[16/10] w-full object-cover ${
-                property.type === "Alquiler" && property.rentalStatus === "Alquilada" ? "grayscale-[30%]" : ""
-              }`}
-            />
-            {property.type === "Alquiler" && property.rentalStatus === "Alquilada" && (
+            {current?.type === "video" && embed ? (
+              <div
+                className={`mx-auto w-full bg-black ${vertical ? "aspect-[9/16] max-w-[420px]" : "aspect-video"}`}
+              >
+                {embed.kind === "file" ? (
+                  <video controls src={embed.src} className="h-full w-full object-contain" />
+                ) : (
+                  <iframe
+                    src={embed.src}
+                    title={`Video de ${property.title}`}
+                    className="h-full w-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                )}
+              </div>
+            ) : (
+              <img
+                src={current?.type === "image" ? current.src : property.image}
+                alt={property.title}
+                className={`aspect-[16/10] w-full object-cover ${
+                  property.type === "Alquiler" && property.rentalStatus === "Alquilada" ? "grayscale-[30%]" : ""
+                }`}
+              />
+            )}
+            {current?.type !== "video" && property.type === "Alquiler" && property.rentalStatus === "Alquilada" && (
               <>
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/10 to-transparent" />
                 <div className="pointer-events-none absolute left-6 top-6">
@@ -190,7 +218,7 @@ function PropertyDetail() {
                 </div>
               </>
             )}
-            {gallery.length > 1 && (
+            {gallery.length > 1 && current?.type !== "video" && (
               <>
                 <button
                   onClick={prev}
@@ -214,15 +242,26 @@ function PropertyDetail() {
           </div>
           <div className="lg:relative">
             <div className="grid grid-cols-4 gap-3 lg:absolute lg:inset-0 lg:grid-cols-2 lg:content-start lg:overflow-y-auto lg:pr-1">
-              {gallery.map((img, i) => (
+              {gallery.map((slide, i) => (
                 <button
-                  key={img + i}
+                  key={(slide.type === "image" ? slide.src : "video") + i}
                   onClick={() => setActiveIdx(i)}
                   className={`relative overflow-hidden rounded-2xl transition-all ${
                     activeIdx === i ? "ring-2 ring-emerald" : "opacity-80 hover:opacity-100"
                   }`}
                 >
-                  <img src={img} alt={`Vista ${i + 1}`} className="aspect-[4/3] w-full object-cover" />
+                  <img
+                    src={slide.type === "image" ? slide.src : imageList[0]}
+                    alt={slide.type === "video" ? "Video de la propiedad" : `Vista ${i + 1}`}
+                    className="aspect-[4/3] w-full object-cover"
+                  />
+                  {slide.type === "video" && (
+                    <span className="absolute inset-0 flex items-center justify-center bg-foreground/45">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow-md">
+                        <Play className="h-4 w-4 translate-x-[1px] fill-current text-foreground" />
+                      </span>
+                    </span>
+                  )}
                 </button>
               ))}
             </div>

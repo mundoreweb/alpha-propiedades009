@@ -38,6 +38,7 @@ export type PropertyRow = {
   parking: number;
   sqm: number;
   images: string[];
+  video_url: string | null;
   is_featured: boolean;
   created_at: string;
 };
@@ -46,6 +47,7 @@ export type PropertyWithDetail = CatalogProperty & {
   description?: string;
   propertyCode?: string;
   images: string[];
+  videoUrl?: string | null;
 };
 
 export function rowToProperty(row: PropertyRow): PropertyWithDetail {
@@ -76,6 +78,7 @@ export function rowToProperty(row: PropertyRow): PropertyWithDetail {
     rentalStatus: isRental ? (row.rental_status ?? "Disponible") : "Disponible",
     description: row.description ?? undefined,
     propertyCode: row.property_code ?? undefined,
+    videoUrl: row.video_url ?? null,
   };
 }
 
@@ -111,6 +114,7 @@ export type PropertyInput = {
   parking: number;
   sqm: number;
   images: string[];
+  video_url?: string | null;
   is_featured?: boolean;
 };
 
