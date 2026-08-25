@@ -78,6 +78,7 @@ export function rowToProperty(row: PropertyRow): PropertyWithDetail {
     rentalStatus: isRental ? (row.rental_status ?? "Disponible") : "Disponible",
     description: row.description ?? undefined,
     propertyCode: row.property_code ?? undefined,
+    videoUrl: row.video_url ?? null,
   };
 }
 
