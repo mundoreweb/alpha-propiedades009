@@ -240,15 +240,26 @@ function PropertyDetail() {
           </div>
           <div className="lg:relative">
             <div className="grid grid-cols-4 gap-3 lg:absolute lg:inset-0 lg:grid-cols-2 lg:content-start lg:overflow-y-auto lg:pr-1">
-              {gallery.map((img, i) => (
+              {gallery.map((slide, i) => (
                 <button
-                  key={img + i}
+                  key={(slide.type === "image" ? slide.src : "video") + i}
                   onClick={() => setActiveIdx(i)}
                   className={`relative overflow-hidden rounded-2xl transition-all ${
                     activeIdx === i ? "ring-2 ring-emerald" : "opacity-80 hover:opacity-100"
                   }`}
                 >
-                  <img src={img} alt={`Vista ${i + 1}`} className="aspect-[4/3] w-full object-cover" />
+                  <img
+                    src={slide.type === "image" ? slide.src : imageList[0]}
+                    alt={slide.type === "video" ? "Video de la propiedad" : `Vista ${i + 1}`}
+                    className="aspect-[4/3] w-full object-cover"
+                  />
+                  {slide.type === "video" && (
+                    <span className="absolute inset-0 flex items-center justify-center bg-foreground/45">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow-md">
+                        <Play className="h-4 w-4 translate-x-[1px] fill-current text-foreground" />
+                      </span>
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
