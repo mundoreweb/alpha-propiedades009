@@ -13,12 +13,14 @@ import {
   Heart,
   Share2,
   Loader2,
+  Play,
 } from "lucide-react";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { buildWhatsAppUrl } from "@/lib/settings-api";
 import { Navbar } from "@/components/Navbar";
 import { PropertyCard } from "@/components/PropertyCard";
 import { fetchPropertyById, fetchProperties, type PropertyWithDetail } from "@/lib/properties-api";
+import { getVideoEmbed, isVerticalVideo } from "@/lib/video";
 
 
 export const Route = createFileRoute("/propiedad/$id")({
