@@ -1,4 +1,4 @@
-import { Heart, BedDouble, Bath, Maximize2, MapPin, Lock } from "lucide-react";
+import { Heart, BedDouble, Bath, Maximize2, MapPin, Lock, Video } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 export type RentalStatus = "Disponible" | "Alquilada";
@@ -17,12 +17,15 @@ export type Property = {
   image: string;
   featured?: boolean;
   rentalStatus?: RentalStatus;
+  videoUrl?: string; // 👈 Campo de video añadido
 };
 
 export function PropertyCard({ property }: { property: Property }) {
   const isRented = property.type === "Alquiler" && property.rentalStatus === "Alquilada";
   const areaValue = property.areaNum ?? parseFloat(property.area);
   const showArea = property.type === "Venta" && Number.isFinite(areaValue) && areaValue > 0;
+  const hasVideo = Boolean(property.videoUrl);
+
   return (
     <article className="group overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card)]">
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -46,7 +49,7 @@ export function PropertyCard({ property }: { property: Property }) {
             </div>
           </>
         )}
-        <div className="absolute top-4 left-4 flex gap-2">
+        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
           <span className="rounded-full bg-card px-3 py-1 text-xs font-semibold text-foreground shadow-sm">
             {property.type}
           </span>
@@ -61,6 +64,11 @@ export function PropertyCard({ property }: { property: Property }) {
           {property.type === "Alquiler" && !isRented && (
             <span className="rounded-full bg-emerald px-3 py-1 text-xs font-semibold text-emerald-foreground shadow-sm">
               Disponible
+            </span>
+          )}
+          {hasVideo && (
+            <span className="flex items-center gap-1 rounded-full bg-slate-900/80 px-2.5 py-1 text-xs font-semibold text-white shadow-sm backdrop-blur">
+              <Video className="h-3 w-3" /> Video
             </span>
           )}
         </div>
@@ -90,7 +98,6 @@ export function PropertyCard({ property }: { property: Property }) {
             <Spec icon={<Maximize2 className="h-4 w-4" />} value={property.area} label="" />
           )}
         </div>
-
 
         <div className="mt-4 flex items-end justify-between">
           <div>
