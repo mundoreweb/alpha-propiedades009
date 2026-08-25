@@ -25,8 +25,8 @@ import { getVideoEmbed, isVerticalVideo } from "@/lib/video";
 export const Route = createFileRoute("/propiedad/$id")({
   head: () => ({
     meta: [
-      { title: "Propiedad — Alpha Propiedades" },
-      { name: "description", content: "Detalle de propiedad en Alpha Propiedades." },
+      { title: "Propiedad — Alpha Propiedades009" },
+      { name: "description", content: "Detalle de propiedad en Alpha Propiedades009." },
     ],
   }),
   component: PropertyDetail,
