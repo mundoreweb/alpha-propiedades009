@@ -216,7 +216,7 @@ function PropertyDetail() {
                 </div>
               </>
             )}
-            {gallery.length > 1 && (
+            {gallery.length > 1 && current?.type !== "video" && (
               <>
                 <button
                   onClick={prev}
