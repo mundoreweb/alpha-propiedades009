@@ -17,7 +17,7 @@ export type Property = {
   image: string;
   featured?: boolean;
   rentalStatus?: RentalStatus;
-  videoUrl?: string; // 👈 Campo de video añadido
+  videoUrl?: string;
 };
 
 export function PropertyCard({ property }: { property: Property }) {
