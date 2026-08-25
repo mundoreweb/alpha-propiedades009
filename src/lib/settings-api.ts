@@ -12,7 +12,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   id: 1,
   whatsapp_number: "50661085991",
   whatsapp_message: "Hola, deseo consultar sobre una propiedad.",
-  contact_email: "info@alphapropiedades.cr",
+  contact_email: "alphapropiedades009@gmail.com",
   office_address: "San José, Costa Rica",
 };
 
