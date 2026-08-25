@@ -100,7 +100,15 @@ function PropertyDetail() {
     );
   }
 
-  const gallery = property.images && property.images.length > 0 ? property.images : [property.image];
+  const imageList = property.images && property.images.length > 0 ? property.images : [property.image];
+  const embed = getVideoEmbed(property.videoUrl);
+  const vertical = isVerticalVideo(property.videoUrl);
+  type Slide = { type: "video" } | { type: "image"; src: string };
+  const gallery: Slide[] = [
+    ...(embed ? [{ type: "video" as const }] : []),
+    ...imageList.map((src) => ({ type: "image" as const, src })),
+  ];
+  const current = gallery[activeIdx] ?? gallery[0];
   const showArea = property.type === "Venta" && property.areaNum > 0;
 
   const codeText = property.propertyCode ? ` (Cód: ${property.propertyCode})` : "";
