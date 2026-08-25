@@ -38,6 +38,7 @@ export type PropertyRow = {
   parking: number;
   sqm: number;
   images: string[];
+  video_url: string | null;
   is_featured: boolean;
   created_at: string;
 };
@@ -46,6 +47,7 @@ export type PropertyWithDetail = CatalogProperty & {
   description?: string;
   propertyCode?: string;
   images: string[];
+  videoUrl?: string | null;
 };
 
 export function rowToProperty(row: PropertyRow): PropertyWithDetail {
