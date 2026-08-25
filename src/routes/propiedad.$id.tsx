@@ -181,14 +181,32 @@ function PropertyDetail() {
 
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_320px]">
           <div className="relative overflow-hidden rounded-3xl bg-muted">
-            <img
-              src={gallery[activeIdx]}
-              alt={property.title}
-              className={`aspect-[16/10] w-full object-cover ${
-                property.type === "Alquiler" && property.rentalStatus === "Alquilada" ? "grayscale-[30%]" : ""
-              }`}
-            />
-            {property.type === "Alquiler" && property.rentalStatus === "Alquilada" && (
+            {current?.type === "video" && embed ? (
+              <div
+                className={`mx-auto w-full bg-black ${vertical ? "aspect-[9/16] max-w-[420px]" : "aspect-video"}`}
+              >
+                {embed.kind === "file" ? (
+                  <video controls src={embed.src} className="h-full w-full object-contain" />
+                ) : (
+                  <iframe
+                    src={embed.src}
+                    title={`Video de ${property.title}`}
+                    className="h-full w-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                )}
+              </div>
+            ) : (
+              <img
+                src={current?.type === "image" ? current.src : property.image}
+                alt={property.title}
+                className={`aspect-[16/10] w-full object-cover ${
+                  property.type === "Alquiler" && property.rentalStatus === "Alquilada" ? "grayscale-[30%]" : ""
+                }`}
+              />
+            )}
+            {current?.type !== "video" && property.type === "Alquiler" && property.rentalStatus === "Alquilada" && (
               <>
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/10 to-transparent" />
                 <div className="pointer-events-none absolute left-6 top-6">
