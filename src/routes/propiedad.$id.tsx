@@ -22,7 +22,6 @@ import { PropertyCard } from "@/components/PropertyCard";
 import { fetchPropertyById, fetchProperties, type PropertyWithDetail } from "@/lib/properties-api";
 import { getVideoEmbed, isVerticalVideo } from "@/lib/video";
 
-
 export const Route = createFileRoute("/propiedad/$id")({
   head: () => ({
     meta: [
@@ -102,7 +101,8 @@ function PropertyDetail() {
     );
   }
 
-  const imageList = property.images && property.images.length > 0 ? property.images : [property.image];
+  const imageList =
+    property.images && property.images.length > 0 ? property.images : [property.image];
   const embed = getVideoEmbed(property.videoUrl);
   const vertical = isVerticalVideo(property.videoUrl);
   type Slide = { type: "video" } | { type: "image"; src: string };
@@ -114,7 +114,7 @@ function PropertyDetail() {
   const showArea = property.type === "Venta" && property.areaNum > 0;
 
   const codeText = property.propertyCode ? ` (Cód: ${property.propertyCode})` : "";
-  const message = `Hola Alpha Propiedades009, estoy interesado en la propiedad ${property.title}${codeText} ubicada en ${property.location} con un precio de ${property.price}${property.period ? ` / ${property.period}` : ""}. Me gustaría recibir más información.`;  
+  const message = `Hola Alpha Propiedades009, estoy interesado en la propiedad ${property.title}${codeText} ubicada en ${property.location} con un precio de ${property.price}${property.period ? ` / ${property.period}` : ""}. Me gustaría recibir más información.`;
   const whatsappUrl = buildWhatsAppUrl(settings, message);
 
   const next = () => setActiveIdx((i) => (i + 1) % gallery.length);
@@ -175,17 +175,22 @@ function PropertyDetail() {
             <div className="text-right">
               <div className="text-3xl font-bold text-foreground">{property.price}</div>
               {property.period && (
-                <div className="text-xs font-medium text-muted-foreground">por {property.period}</div>
+                <div className="text-xs font-medium text-muted-foreground">
+                  por {property.period}
+                </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_320px]">
-          <div className="relative overflow-hidden rounded-3xl bg-muted">
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_320px] lg:items-start">
+          {/* Visor Principal con altura contenida para PC */}
+          <div className="relative overflow-hidden rounded-3xl bg-black flex items-center justify-center h-[360px] sm:h-[420px] lg:h-[480px] w-full">
             {current?.type === "video" && embed ? (
               <div
-                className={`mx-auto w-full bg-black ${vertical ? "aspect-[9/16] max-w-[420px]" : "aspect-video"}`}
+                className={`mx-auto h-full w-full bg-black flex items-center justify-center ${
+                  vertical ? "aspect-[9/16] max-w-[290px]" : "aspect-video"
+                }`}
               >
                 {embed.kind === "file" ? (
                   <video controls src={embed.src} className="h-full w-full object-contain" />
@@ -203,21 +208,29 @@ function PropertyDetail() {
               <img
                 src={current?.type === "image" ? current.src : property.image}
                 alt={property.title}
-                className={`aspect-[16/10] w-full object-cover ${
-                  property.type === "Alquiler" && property.rentalStatus === "Alquilada" ? "grayscale-[30%]" : ""
+                className={`h-full w-full object-cover ${
+                  property.type === "Alquiler" && property.rentalStatus === "Alquilada"
+                    ? "grayscale-[30%]"
+                    : ""
                 }`}
               />
             )}
-            {current?.type !== "video" && property.type === "Alquiler" && property.rentalStatus === "Alquilada" && (
-              <>
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/10 to-transparent" />
-                <div className="pointer-events-none absolute left-6 top-6">
-                  <span className="rounded-full bg-amber-500 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg ring-2 ring-white/30">
-                    Actualmente Alquilada
-                  </span>
-                </div>
-              </>
-            )}
+
+            {/* Etiqueta de Alquilada */}
+            {current?.type !== "video" &&
+              property.type === "Alquiler" &&
+              property.rentalStatus === "Alquilada" && (
+                <>
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/10 to-transparent" />
+                  <div className="pointer-events-none absolute left-6 top-6">
+                    <span className="rounded-full bg-amber-500 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg ring-2 ring-white/30">
+                      Actualmente Alquilada
+                    </span>
+                  </div>
+                </>
+              )}
+
+            {/* Flechas de navegación */}
             {gallery.length > 1 && current?.type !== "video" && (
               <>
                 <button
@@ -236,11 +249,15 @@ function PropertyDetail() {
                 </button>
               </>
             )}
-            <div className="absolute bottom-4 right-4 rounded-full bg-foreground/70 px-3 py-1 text-xs font-medium text-background">
+
+            {/* Contador de imágenes/video */}
+            <div className="absolute bottom-4 right-4 rounded-full bg-foreground/70 px-3 py-1 text-xs font-medium text-background backdrop-blur">
               {activeIdx + 1} / {gallery.length}
             </div>
           </div>
-          <div className="lg:relative">
+
+          {/* Columna de miniaturas sincronizada en altura */}
+          <div className="lg:relative lg:h-[480px]">
             <div className="grid grid-cols-4 gap-3 lg:absolute lg:inset-0 lg:grid-cols-2 lg:content-start lg:overflow-y-auto lg:pr-1">
               {gallery.map((slide, i) => (
                 <button
@@ -266,7 +283,6 @@ function PropertyDetail() {
               ))}
             </div>
           </div>
-
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px]">
@@ -276,14 +292,29 @@ function PropertyDetail() {
                 Características
               </h2>
               <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <SpecCard icon={<BedDouble className="h-5 w-5" />} value={property.beds} label="Habitaciones" />
-                <SpecCard icon={<Bath className="h-5 w-5" />} value={property.baths} label="Baños" />
-                <SpecCard icon={<Car className="h-5 w-5" />} value={property.parking} label="Parqueos" />
+                <SpecCard
+                  icon={<BedDouble className="h-5 w-5" />}
+                  value={property.beds}
+                  label="Habitaciones"
+                />
+                <SpecCard
+                  icon={<Bath className="h-5 w-5" />}
+                  value={property.baths}
+                  label="Baños"
+                />
+                <SpecCard
+                  icon={<Car className="h-5 w-5" />}
+                  value={property.parking}
+                  label="Parqueos"
+                />
                 {showArea && (
-                  <SpecCard icon={<Maximize2 className="h-5 w-5" />} value={property.area} label="Área" />
+                  <SpecCard
+                    icon={<Maximize2 className="h-5 w-5" />}
+                    value={property.area}
+                    label="Área"
+                  />
                 )}
               </div>
-
             </section>
 
             <section className="mt-10">
@@ -296,15 +327,21 @@ function PropertyDetail() {
                 ) : (
                   <>
                     <p>
-                      Descubre <strong>{property.title}</strong>, una propiedad excepcional ubicada en{" "}
-                      {property.canton}, una de las zonas más atractivas de {property.provincia}, Costa Rica.
-                      Esta {property.type === "Venta" ? "exclusiva propiedad en venta" : "magnífica propiedad en alquiler"} ofrece
-                      {showArea ? ` ${property.area} de ` : " "}espacio diseñado con acabados modernos, abundante luz natural y vistas privilegiadas.
+                      Descubre <strong>{property.title}</strong>, una propiedad excepcional ubicada
+                      en {property.canton}, una de las zonas más atractivas de {property.provincia},
+                      Costa Rica. Esta{" "}
+                      {property.type === "Venta"
+                        ? "exclusiva propiedad en venta"
+                        : "magnífica propiedad en alquiler"}{" "}
+                      ofrece
+                      {showArea ? ` ${property.area} de ` : " "}espacio diseñado con acabados
+                      modernos, abundante luz natural y vistas privilegiadas.
                     </p>
                     <p>
-                      Cuenta con {property.beds} amplias habitaciones, {property.baths} baños completos y{" "}
-                      {property.parking} espacios de estacionamiento. Los espacios sociales fluyen hacia áreas exteriores
-                      perfectas para disfrutar del clima tropical costarricense.
+                      Cuenta con {property.beds} amplias habitaciones, {property.baths} baños
+                      completos y {property.parking} espacios de estacionamiento. Los espacios
+                      sociales fluyen hacia áreas exteriores perfectas para disfrutar del clima
+                      tropical costarricense.
                     </p>
                   </>
                 )}
@@ -321,7 +358,9 @@ function PropertyDetail() {
                 </div>
                 <div>
                   <div className="text-base font-semibold text-foreground">{property.canton}</div>
-                  <div className="text-sm text-muted-foreground">Provincia de {property.provincia}, Costa Rica</div>
+                  <div className="text-sm text-muted-foreground">
+                    Provincia de {property.provincia}, Costa Rica
+                  </div>
                 </div>
               </div>
             </section>
@@ -336,11 +375,14 @@ function PropertyDetail() {
                   </div>
                   <div>
                     <div className="text-sm font-bold text-foreground">Ninoska</div>
-                    <div className="text-xs text-muted-foreground">Administradora Alpha Propiedades</div>
+                    <div className="text-xs text-muted-foreground">
+                      Administradora Alpha Propiedades
+                    </div>
                   </div>
                 </div>
                 <p className="mt-4 text-sm text-muted-foreground">
-                  ¿Te interesa esta propiedad? Conversemos por WhatsApp y resolveré todas tus dudas al instante.
+                  ¿Te interesa esta propiedad? Conversemos por WhatsApp y resolveré todas tus dudas
+                  al instante.
                 </p>
                 <a
                   href={whatsappUrl}
@@ -366,7 +408,9 @@ function PropertyDetail() {
               Otras propiedades en {property.provincia}
             </h2>
             <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {related.map((p) => <PropertyCard key={p.id} property={p} />)}
+              {related.map((p) => (
+                <PropertyCard key={p.id} property={p} />
+              ))}
             </div>
           </section>
         )}
@@ -385,7 +429,15 @@ function PropertyDetail() {
   );
 }
 
-function SpecCard({ icon, value, label }: { icon: React.ReactNode; value: string | number; label: string }) {
+function SpecCard({
+  icon,
+  value,
+  label,
+}: {
+  icon: React.ReactNode;
+  value: string | number;
+  label: string;
+}) {
   return (
     <div className="rounded-2xl border border-border bg-card p-4">
       <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald/10 text-emerald">
