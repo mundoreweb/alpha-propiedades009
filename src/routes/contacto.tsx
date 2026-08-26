@@ -73,8 +73,8 @@ function Contacto() {
 
     // 3. VALIDACIÓN BÁSICA DE DATOS
     const telefonoLimpio = form.telefono.replace(/\D/g, "");
-    if (telefonoLimpio.length < 8) {
-      alert("Por favor ingresa un número de teléfono válido (mínimo 8 dígitos).");
+    if (form.telefono && (telefonoLimpio.length < 8 || telefonoLimpio.length > 15)) {
+      alert("Por favor ingresa un número de teléfono válido (entre 8 y 15 dígitos).");
       return;
     }
 
@@ -169,7 +169,7 @@ function Contacto() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-[var(--shadow-soft)]">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald/10 text-emerald">
-                    <Phone className="h-4.5 w-4.5" />
+                    <Phone className="h-5 w-5" />
                   </div>
                   <div className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                     Teléfono
@@ -180,7 +180,7 @@ function Contacto() {
                 </div>
                 <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-[var(--shadow-soft)]">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald/10 text-emerald">
-                    <Clock className="h-4.5 w-4.5" />
+                    <Clock className="h-5 w-5" />
                   </div>
                   <div className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                     Horario
@@ -194,7 +194,7 @@ function Contacto() {
               <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-[var(--shadow-soft)]">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald/10 text-emerald">
-                    <MapPin className="h-4.5 w-4.5" />
+                    <MapPin className="h-5 w-5" />
                   </div>
                   <div>
                     <div className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
@@ -386,6 +386,7 @@ function Field({
 
 function formatPhone(raw: string) {
   const d = (raw || "").replace(/\D/g, "");
+  if (!d) return "";
   if (d.length === 11 && d.startsWith("506")) return `+506 ${d.slice(3, 7)} ${d.slice(7)}`;
   return `+${d}`;
 }
