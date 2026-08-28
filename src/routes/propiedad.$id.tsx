@@ -14,6 +14,8 @@ import {
   Share2,
   Loader2,
   Play,
+  Copy,
+  Check,
 } from "lucide-react";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { buildWhatsAppUrl } from "@/lib/settings-api";
@@ -21,6 +23,40 @@ import { Navbar } from "@/components/Navbar";
 import { PropertyCard } from "@/components/PropertyCard";
 import { fetchPropertyById, fetchProperties, type PropertyWithDetail } from "@/lib/properties-api";
 import { getVideoEmbed, isVerticalVideo } from "@/lib/video";
+
+function SharePropertyButton() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch (err) {
+      console.error("Error al copiar enlace:", err);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      type="button"
+      className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-xs font-semibold text-foreground shadow-sm transition-all hover:bg-muted"
+    >
+      {copied ? (
+        <>
+          <Check className="h-4 w-4 text-emerald-600" />
+          <span className="text-emerald-600 font-bold">¡Enlace copiado al portapapeles!</span>
+        </>
+      ) : (
+        <>
+          <Copy className="h-4 w-4 text-muted-foreground" />
+          <span>Copiar enlace de esta propiedad</span>
+        </>
+      )}
+    </button>
+  );
+}
 
 export const Route = createFileRoute("/propiedad/$id")({
   head: () => ({
@@ -380,10 +416,13 @@ function PropertyDetail() {
                     </div>
                   </div>
                 </div>
+
                 <p className="mt-4 text-sm text-muted-foreground">
                   ¿Te interesa esta propiedad? Conversemos por WhatsApp y resolveré todas tus dudas
                   al instante.
                 </p>
+
+                {/* Botón de WhatsApp existente */}
                 <a
                   href={whatsappUrl}
                   target="_blank"
@@ -393,6 +432,11 @@ function PropertyDetail() {
                   <MessageCircle className="h-5 w-5" />
                   Consultar por WhatsApp
                 </a>
+
+                {/* 📍 BOTÓN DE COPIAR ENLACE AGREGADO AQUÍ */}
+                <SharePropertyButton />
+
+                {/* Mensaje pre-llenado existente */}
                 <div className="mt-4 rounded-2xl bg-muted p-4 text-xs leading-relaxed text-muted-foreground">
                   <span className="font-semibold text-foreground">Mensaje pre-llenado:</span>
                   <p className="mt-1.5 italic">"{message}"</p>
