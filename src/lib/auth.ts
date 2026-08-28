@@ -1,8 +1,8 @@
 // Real admin authentication backed by Lovable Cloud auth.
 import { supabase } from "@/integrations/supabase/client";
 
-export const ADMIN_EMAIL = "alphapropiedades009@gmail.com";
-export const ADMIN_PASSWORD = "8*%A$UCF2vyeDws";
+export const ADMIN_EMAIL = "alphapropiedades@gmail.com";
+export const ADMIN_PASSWORD = "admin123";
 
 export async function isAdminAuthed(): Promise<boolean> {
   const { data } = await supabase.auth.getUser();
