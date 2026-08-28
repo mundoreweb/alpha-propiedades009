@@ -29,6 +29,7 @@ export type PropertyRow = {
   description: string | null;
   property_code: string | null;
   price: number;
+  currency?: "USD" | "CRC" | null; // 👈 Moneda ($ o ₡)
   operation: "Venta" | "Alquiler";
   rental_status: "Disponible" | "Alquilada";
   province: string;
@@ -37,6 +38,7 @@ export type PropertyRow = {
   bathrooms: number;
   parking: number;
   sqm: number;
+  lot_sqm?: number | null; // 👈 Metraje de lote
   images: string[];
   video_url: string | null;
   is_featured: boolean;
@@ -46,23 +48,29 @@ export type PropertyRow = {
 export type PropertyWithDetail = CatalogProperty & {
   description?: string;
   propertyCode?: string;
+  currency?: "USD" | "CRC";
+  lotSqm?: number | null;
   images: string[];
-  videoUrl?: string | null;
+  videoUrl?: string; // 👈 Solución al error de Typescript
 };
 
 export function rowToProperty(row: PropertyRow): PropertyWithDetail {
   const imgs = (Array.isArray(row.images) ? row.images : []).map(resolveImage);
   const primary = imgs[0] ?? p1;
   const isRental = row.operation === "Alquiler";
-  const priceStr = isRental
-    ? `$${Number(row.price).toLocaleString("en-US")}`
-    : `$${Number(row.price).toLocaleString("en-US")}`;
+  
+  // 📍 Símbolo según la moneda elegida por Ninoska
+  const currency = row.currency ?? "USD";
+  const symbol = currency === "CRC" ? "₡" : "$";
+  const priceStr = `${symbol}${Number(row.price).toLocaleString("es-CR")}`;
+
   return {
     id: row.id,
     title: row.title,
     location: `${row.city ?? row.province}, ${row.province}`,
     price: priceStr,
     priceUSD: Number(row.price),
+    currency: currency,
     period: isRental ? "mes" : undefined,
     type: row.operation,
     beds: row.bedrooms,
@@ -70,6 +78,7 @@ export function rowToProperty(row: PropertyRow): PropertyWithDetail {
     parking: row.parking,
     area: `${row.sqm} m²`,
     areaNum: Number(row.sqm),
+    lotSqm: row.lot_sqm ?? null,
     image: primary,
     images: imgs.length > 0 ? imgs : [primary],
     featured: row.is_featured,
@@ -78,7 +87,7 @@ export function rowToProperty(row: PropertyRow): PropertyWithDetail {
     rentalStatus: isRental ? (row.rental_status ?? "Disponible") : "Disponible",
     description: row.description ?? undefined,
     propertyCode: row.property_code ?? undefined,
-    videoUrl: row.video_url ?? null,
+    videoUrl: row.video_url ?? undefined, // 👈 Asignado como undefined
   };
 }
 
@@ -105,6 +114,7 @@ export type PropertyInput = {
   description?: string | null;
   property_code?: string | null;
   price: number;
+  currency?: "USD" | "CRC";
   operation: "Venta" | "Alquiler";
   rental_status: "Disponible" | "Alquilada";
   province: string;
@@ -113,6 +123,7 @@ export type PropertyInput = {
   bathrooms: number;
   parking: number;
   sqm: number;
+  lot_sqm?: number | null;
   images: string[];
   video_url?: string | null;
   is_featured?: boolean;

@@ -1,12 +1,30 @@
 import { Outlet, createFileRoute, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Pencil, Trash2, Search, X, Home as HomeIcon, ShieldCheck, LogOut, ImagePlus, Loader2, Star, UploadCloud, Settings2, Check } from "lucide-react";
-import { uploadPropertyImage, fetchSiteSettings, updateSiteSettings, DEFAULT_SETTINGS, type SiteSettings } from "@/lib/settings-api";
-import { Navbar } from "@/components/Navbar";
 import {
-  provincias,
-  cantonesPorProvincia,
-} from "@/data/properties";
+  Plus,
+  Pencil,
+  Trash2,
+  Search,
+  X,
+  Home as HomeIcon,
+  ShieldCheck,
+  LogOut,
+  ImagePlus,
+  Loader2,
+  Star,
+  UploadCloud,
+  Settings2,
+  Check,
+} from "lucide-react";
+import {
+  uploadPropertyImage,
+  fetchSiteSettings,
+  updateSiteSettings,
+  DEFAULT_SETTINGS,
+  type SiteSettings,
+} from "@/lib/settings-api";
+import { Navbar } from "@/components/Navbar";
+import { provincias, cantonesPorProvincia } from "@/data/properties";
 import { isAdminAuthed, logoutAdmin } from "@/lib/auth";
 import {
   fetchProperties,
@@ -48,6 +66,8 @@ type FormState = {
   videoUrl: string;
   rentalStatus: "Disponible" | "Alquilada";
   featured: boolean;
+  currency: "USD" | "CRC";
+  lotSqm: string;
 };
 
 const EMPTY_FORM: FormState = {
@@ -66,6 +86,8 @@ const EMPTY_FORM: FormState = {
   videoUrl: "",
   rentalStatus: "Disponible",
   featured: false,
+  currency: "USD",
+  lotSqm: "",
 };
 
 function formatPrice(usd: number) {
@@ -155,12 +177,14 @@ function AdminDashboard() {
       id: p.id,
       title: p.title,
       priceUSD: String(p.priceUSD),
+      currency: p.currency ?? "USD",
       type: p.type,
       provincia: p.provincia,
       canton: p.canton,
       description: p.description ?? "",
       propertyCode: p.propertyCode ?? "",
       areaNum: String(p.areaNum),
+      lotSqm: p.lotSqm ? String(p.lotSqm) : "",
       beds: String(p.beds),
       baths: String(p.baths),
       parking: String(p.parking),
@@ -349,7 +373,10 @@ function AdminDashboard() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="px-5 py-12 text-center text-sm text-muted-foreground">
+                    <td
+                      colSpan={7}
+                      className="px-5 py-12 text-center text-sm text-muted-foreground"
+                    >
                       <Loader2 className="mx-auto mb-2 h-5 w-5 animate-spin" />
                       Cargando propiedades…
                     </td>
@@ -371,9 +398,13 @@ function AdminDashboard() {
                             <div>
                               <div className="flex items-center gap-1.5 font-semibold text-foreground">
                                 {p.title}
-                                {p.featured && <Star className="h-3.5 w-3.5 fill-emerald text-emerald" />}
+                                {p.featured && (
+                                  <Star className="h-3.5 w-3.5 fill-emerald text-emerald" />
+                                )}
                               </div>
-                              <div className="text-xs text-muted-foreground">ID: {p.id.slice(0, 8)}…</div>
+                              <div className="text-xs text-muted-foreground">
+                                ID: {p.id.slice(0, 8)}…
+                              </div>
                             </div>
                           </div>
                         </td>
@@ -411,7 +442,10 @@ function AdminDashboard() {
                         <td className="px-5 py-3 font-semibold text-foreground">
                           {formatPrice(p.priceUSD)}
                           {p.period && (
-                            <span className="text-xs font-normal text-muted-foreground"> / {p.period}</span>
+                            <span className="text-xs font-normal text-muted-foreground">
+                              {" "}
+                              / {p.period}
+                            </span>
                           )}
                         </td>
                         <td className="px-5 py-3 text-xs text-muted-foreground">
@@ -439,7 +473,10 @@ function AdminDashboard() {
                     ))}
                     {filtered.length === 0 && (
                       <tr>
-                        <td colSpan={7} className="px-5 py-12 text-center text-sm text-muted-foreground">
+                        <td
+                          colSpan={7}
+                          className="px-5 py-12 text-center text-sm text-muted-foreground"
+                        >
                           <HomeIcon className="mx-auto mb-2 h-6 w-6 opacity-50" />
                           No hay propiedades que coincidan con la búsqueda.
                         </td>
@@ -502,20 +539,42 @@ function AdminDashboard() {
                 />
               </Field>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-3">
                 <Field label="Operación">
                   <select
                     value={form.type}
+                    onChange={(e) => {
+                      const newType = e.target.value as "Venta" | "Alquiler";
+                      setForm({
+                        ...form,
+                        type: newType,
+                        // Si cambia a Alquiler, limpiamos m² lote
+                        lotSqm: newType === "Alquiler" ? "" : form.lotSqm,
+                      });
+                    }}
+                    className={inputClass}
+                  >
+                    <option value="Venta">Venta</option>
+                    <option value="Alquiler">Alquiler</option>
+                  </select>
+                </Field>
+
+                <Field label="Moneda">
+                  <select
+                    value={form.currency || "USD"}
                     onChange={(e) =>
-                      setForm({ ...form, type: e.target.value as "Venta" | "Alquiler" })
+                      setForm({ ...form, currency: e.target.value as "USD" | "CRC" })
                     }
                     className={inputClass}
                   >
-                    <option>Venta</option>
-                    <option>Alquiler</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="CRC">CRC (₡)</option>
                   </select>
                 </Field>
-                <Field label={`Precio (USD${form.type === "Alquiler" ? " / mes" : ""})`}>
+
+                <Field
+                  label={`Precio (${form.currency === "CRC" ? "₡" : "$"}${form.type === "Alquiler" ? " / mes" : ""})`}
+                >
                   <input
                     required
                     type="number"
@@ -581,19 +640,34 @@ function AdminDashboard() {
                 </Field>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-4">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-5">
+                {/* M² Constr. (Ahora visible tanto en Venta como en Alquiler) */}
+                <Field label="M² Constr.">
+                  <input
+                    required
+                    type="number"
+                    min="0"
+                    value={form.areaNum}
+                    onChange={(e) => setForm({ ...form, areaNum: e.target.value })}
+                    className={inputClass}
+                    placeholder="Ej. 120"
+                  />
+                </Field>
+
+                {/* M² Lote (Solo visible en Venta) */}
                 {form.type === "Venta" && (
-                  <Field label="m²">
+                  <Field label="M² Lote">
                     <input
-                      required
                       type="number"
                       min="0"
-                      value={form.areaNum}
-                      onChange={(e) => setForm({ ...form, areaNum: e.target.value })}
+                      value={form.lotSqm || ""}
+                      onChange={(e) => setForm({ ...form, lotSqm: e.target.value })}
                       className={inputClass}
+                      placeholder="Ej. 300"
                     />
                   </Field>
                 )}
+
                 <Field label="Hab.">
                   <input
                     required
@@ -603,6 +677,7 @@ function AdminDashboard() {
                     className={inputClass}
                   />
                 </Field>
+
                 <Field label="Baños (admite 1.5, 2.5…)">
                   <input
                     required
@@ -614,6 +689,7 @@ function AdminDashboard() {
                     className={inputClass}
                   />
                 </Field>
+
                 <Field label="Parqueos">
                   <input
                     required
@@ -662,7 +738,11 @@ function AdminDashboard() {
                     >
                       <div className="flex h-14 w-20 items-center justify-center overflow-hidden rounded-lg border border-border bg-muted">
                         {url ? (
-                          <img src={url} alt={`Imagen ${i + 1}`} className="h-full w-full object-cover" />
+                          <img
+                            src={url}
+                            alt={`Imagen ${i + 1}`}
+                            className="h-full w-full object-cover"
+                          />
                         ) : (
                           <ImagePlus className="h-5 w-5 text-muted-foreground" />
                         )}
@@ -725,7 +805,8 @@ function AdminDashboard() {
                   </label>
                   {uploading > 0 && (
                     <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" /> Subiendo {uploading} imagen(es)…
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" /> Subiendo {uploading}{" "}
+                      imagen(es)…
                     </p>
                   )}
                   {uploadError && (
@@ -793,7 +874,9 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-2xl border border-border bg-card px-5 py-4 shadow-[var(--shadow-soft)]">
-      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </p>
       <p className="mt-1 text-2xl font-bold text-foreground">{value}</p>
     </div>
   );
