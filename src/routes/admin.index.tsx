@@ -24,7 +24,7 @@ import {
   type SiteSettings,
 } from "@/lib/settings-api";
 import { Navbar } from "@/components/Navbar";
-import { provincias, cantonesPorProvincia } from "@/data/properties";
+import { provincias } from "@/data/properties";
 import { isAdminAuthed, logoutAdmin } from "@/lib/auth";
 import {
   fetchProperties,
@@ -75,7 +75,7 @@ const EMPTY_FORM: FormState = {
   priceUSD: "",
   type: "Venta",
   provincia: "San José",
-  canton: cantonesPorProvincia["San José"][0],
+  canton: "",
   description: "",
   propertyCode: "",
   areaNum: "",
@@ -286,7 +286,7 @@ function AdminDashboard() {
     }
   };
 
-  const cantones = cantonesPorProvincia[form.provincia] ?? [];
+
 
   const addImage = () => setForm((f) => ({ ...f, images: [...f.images, ""] }));
   const removeImage = (i: number) =>
@@ -616,13 +616,7 @@ function AdminDashboard() {
                 <Field label="Provincia">
                   <select
                     value={form.provincia}
-                    onChange={(e) =>
-                      setForm({
-                        ...form,
-                        provincia: e.target.value,
-                        canton: cantonesPorProvincia[e.target.value][0],
-                      })
-                    }
+                    onChange={(e) => setForm({ ...form, provincia: e.target.value })}
                     className={inputClass}
                   >
                     {provincias.map((p) => (
@@ -630,16 +624,16 @@ function AdminDashboard() {
                     ))}
                   </select>
                 </Field>
-                <Field label="Cantón">
-                  <select
+
+                <Field label="Cantón / Distrito / Zona">
+                  <input
+                    required
+                    type="text"
                     value={form.canton}
                     onChange={(e) => setForm({ ...form, canton: e.target.value })}
                     className={inputClass}
-                  >
-                    {cantones.map((c) => (
-                      <option key={c}>{c}</option>
-                    ))}
-                  </select>
+                    placeholder="Ej. Rohrmoser, Escazú, Lindora..."
+                  />
                 </Field>
               </div>
 
