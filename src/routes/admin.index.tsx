@@ -243,45 +243,48 @@ function AdminDashboard() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const usd = Number(form.priceUSD) || 0;
-    const cleanImages = form.images.map((s) => s.trim()).filter(Boolean);
-    const input = {
-      title: form.title,
-      description: form.description || null,
-      property_code: form.propertyCode.trim() || null,
-      price: usd,
-      operation: form.type,
-      rental_status: form.type === "Alquiler" ? form.rentalStatus : ("Disponible" as const),
-      province: form.provincia,
-      city: form.canton,
-      bedrooms: Number(form.beds) || 0,
-      bathrooms: Number(form.baths) || 0,
-      parking: Number(form.parking) || 0,
-      sqm: form.type === "Venta" ? Number(form.areaNum) || 0 : 0,
-      images: cleanImages,
-      video_url: form.videoUrl.trim() || null,
-      is_featured: form.featured,
-    };
+  e.preventDefault();
+  const priceVal = Number(form.priceUSD) || 0;
+  const cleanImages = form.images.map((s) => s.trim()).filter(Boolean);
 
-    setSaving(true);
-    try {
-      if (editing) {
-        const updated = await updateProperty(editing, input);
-        setList((prev) => prev.map((p) => (p.id === editing ? updated : p)));
-      } else {
-        const created = await createProperty(input);
-        setList((prev) => [created, ...prev]);
-      }
-      setModalOpen(false);
-      setEditing(null);
-      setForm(EMPTY_FORM);
-    } catch (err) {
-      alert("Error al guardar: " + ((err as Error).message ?? "desconocido"));
-    } finally {
-      setSaving(false);
-    }
+  const input = {
+    title: form.title,
+    description: form.description || null,
+    property_code: form.propertyCode.trim() || null,
+    price: priceVal,
+    currency: form.currency, // 👈 Se guarda la moneda seleccionada (USD o CRC)
+    operation: form.type,
+    rental_status: form.type === "Alquiler" ? form.rentalStatus : ("Disponible" as const),
+    province: form.provincia,
+    city: form.canton,
+    bedrooms: Number(form.beds) || 0,
+    bathrooms: Number(form.baths) || 0,
+    parking: Number(form.parking) || 0,
+    sqm: Number(form.areaNum) || 0, // 👈 M² de construcción (Aplica a Venta y Alquiler)
+    lot_sqm: form.type === "Venta" ? Number(form.lotSqm) || null : null, // 👈 M² de lote (Solo Venta)
+    images: cleanImages,
+    video_url: form.videoUrl.trim() || null,
+    is_featured: form.featured,
   };
+
+  setSaving(true);
+  try {
+    if (editing) {
+      const updated = await updateProperty(editing, input);
+      setList((prev) => prev.map((p) => (p.id === editing ? updated : p)));
+    } else {
+      const created = await createProperty(input);
+      setList((prev) => [created, ...prev]);
+    }
+    setModalOpen(false);
+    setEditing(null);
+    setForm(EMPTY_FORM);
+  } catch (err) {
+    alert("Error al guardar: " + ((err as Error).message ?? "desconocido"));
+  } finally {
+    setSaving(false);
+  }
+};
 
   const cantones = cantonesPorProvincia[form.provincia] ?? [];
 
