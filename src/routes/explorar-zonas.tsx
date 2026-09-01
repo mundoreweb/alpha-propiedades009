@@ -437,7 +437,7 @@ function ExplorarZonas() {
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <div className="group relative overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-soft)]">
               <img
-                src="/explorar-01.jpg"
+                src="/Explorar-01.jpg"
                 alt="Desarrollo Urbano en Costa Rica"
                 className="h-60 w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
@@ -449,7 +449,7 @@ function ExplorarZonas() {
 
             <div className="group relative overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-soft)]">
               <img
-                src="/explorar-02.jpg"
+                src="/Explorar-02.jpg"
                 alt="Estilo de Vida Costero en Costa Rica"
                 className="h-60 w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
