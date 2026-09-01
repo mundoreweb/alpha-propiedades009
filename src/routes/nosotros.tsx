@@ -9,19 +9,43 @@ export const Route = createFileRoute("/nosotros")({
   head: () => ({
     meta: [
       { title: "Sobre Nosotros — Alpha Propiedades 009" },
-      { name: "description", content: "Conoce a Ninoska Valladares y al equipo de Alpha Propiedades, tu aliado de confianza en el mercado inmobiliario de Costa Rica." },
+      {
+        name: "description",
+        content:
+          "Conoce a Ninoska Valladares y al equipo de Alpha Propiedades, tu aliado de confianza en el mercado inmobiliario de Costa Rica.",
+      },
       { property: "og:title", content: "Sobre Nosotros — Alpha Propiedades 009" },
-      { property: "og:description", content: "Asesoría personalizada, experiencia local y transparencia total en bienes raíces en Costa Rica." },
+      {
+        property: "og:description",
+        content:
+          "Asesoría personalizada, experiencia local y transparencia total en bienes raíces en Costa Rica.",
+      },
     ],
   }),
   component: Nosotros,
 });
 
 const pillars = [
-  { icon: Heart, title: "Asesoría Personalizada", text: "Entendemos tus necesidades únicas en cada paso del proceso." },
-  { icon: Compass, title: "Experiencia Local", text: "Conocimiento profundo de las mejores zonas, cantones y plusvalía en Costa Rica." },
-  { icon: ShieldCheck, title: "Transparencia Total", text: "Acompañamiento legal y comercial claro, honesto y sin sorpresas." },
-  { icon: Sparkles, title: "Gestión Eficiente", text: "Proceso ágil y simplificado para compradores y vendedores." },
+  {
+    icon: Heart,
+    title: "Asesoría Personalizada",
+    text: "Entendemos tus necesidades únicas en cada paso del proceso.",
+  },
+  {
+    icon: Compass,
+    title: "Experiencia Local",
+    text: "Conocimiento profundo de las mejores zonas, cantones y plusvalía en Costa Rica.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Transparencia Total",
+    text: "Acompañamiento legal y comercial claro, honesto y sin sorpresas.",
+  },
+  {
+    icon: Sparkles,
+    title: "Gestión Eficiente",
+    text: "Proceso ágil y simplificado para compradores y vendedores.",
+  },
 ];
 
 const stats = [
@@ -31,17 +55,22 @@ const stats = [
   { value: "+10", label: "Años de experiencia" },
 ];
 
-
 function Nosotros() {
   const { settings } = useSiteSettings();
-  const WHATSAPP = buildWhatsAppUrl(settings, "Hola Ninoska, me gustaría recibir asesoría de Alpha Propiedades 009.");
+  const WHATSAPP = buildWhatsAppUrl(
+    settings,
+    "Hola Ninoska, me gustaría recibir asesoría de Alpha Propiedades 009.",
+  );
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <main>
         {/* Hero */}
         <section className="relative overflow-hidden bg-primary text-primary-foreground">
-          <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-hero)" }} />
+          <div
+            className="absolute inset-0 opacity-30"
+            style={{ background: "var(--gradient-hero)" }}
+          />
           <div className="absolute -top-24 -right-16 h-72 w-72 rounded-full bg-emerald/30 blur-3xl" />
           <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-32">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-emerald">
@@ -61,23 +90,25 @@ function Nosotros() {
           <div className="grid gap-12 md:grid-cols-2 md:items-center">
             <div className="relative overflow-hidden rounded-3xl shadow-[var(--shadow-card)]">
               <img
-                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80"
-                alt="Arquitectura moderna en Costa Rica"
+                src="/Nosotros.jpeg"
+                alt="Sobre Nosotros - Alpha Propiedades"
                 className="h-full w-full object-cover"
                 loading="lazy"
               />
             </div>
             <div>
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald">Nuestra historia</span>
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald">
+                Nuestra historia
+              </span>
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                 Guiados por Ninoska Valladares
               </h2>
               <p className="mt-5 text-base leading-relaxed text-muted-foreground">
-                Alpha Propiedades 009 nació con una convicción simple: comprar, vender o alquilar una casa
-                en Costa Rica debe ser una experiencia clara, humana y bien acompañada. Bajo el
-                liderazgo de <strong className="text-foreground">Ninoska Valladares</strong>, ayudamos
-                a familias, inversionistas y expatriados a encontrar la propiedad correcta en el
-                cantón correcto.
+                Alpha Propiedades 009 nació con una convicción simple: comprar, vender o alquilar
+                una casa en Costa Rica debe ser una experiencia clara, humana y bien acompañada.
+                Bajo el liderazgo de <strong className="text-foreground">Ninoska Valladares</strong>
+                , ayudamos a familias, inversionistas y expatriados a encontrar la propiedad
+                correcta en el cantón correcto.
               </p>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground">
                 Combinamos conocimiento local de las 7 provincias, transparencia total en cada
@@ -93,7 +124,10 @@ function Nosotros() {
                 >
                   Ver catálogo
                 </Link>
-                <Link to="/contacto" className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted">
+                <Link
+                  to="/contacto"
+                  className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted"
+                >
                   Contáctanos
                 </Link>
               </div>
@@ -105,7 +139,9 @@ function Nosotros() {
         <section className="bg-muted/30 py-20">
           <div className="mx-auto max-w-7xl px-6">
             <div className="text-center">
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald">Pilares</span>
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald">
+                Pilares
+              </span>
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                 Nuestros pilares de excelencia
               </h2>
@@ -133,7 +169,9 @@ function Nosotros() {
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {stats.map((s) => (
                 <div key={s.label} className="text-center">
-                  <div className="text-4xl font-bold tracking-tight text-emerald md:text-5xl">{s.value}</div>
+                  <div className="text-4xl font-bold tracking-tight text-emerald md:text-5xl">
+                    {s.value}
+                  </div>
                   <div className="mt-2 text-sm text-white/70">{s.label}</div>
                 </div>
               ))}
@@ -145,9 +183,12 @@ function Nosotros() {
         <section className="mx-auto max-w-7xl px-6 pb-24">
           <div className="flex flex-col items-center gap-6 rounded-3xl border border-border/60 bg-card p-10 text-center shadow-[var(--shadow-soft)] md:flex-row md:justify-between md:text-left">
             <div>
-              <h3 className="text-2xl font-bold tracking-tight text-foreground">¿Listo para dar el siguiente paso?</h3>
+              <h3 className="text-2xl font-bold tracking-tight text-foreground">
+                ¿Listo para dar el siguiente paso?
+              </h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                Explora nuestro catálogo o escríbenos directamente por WhatsApp para asesoría inmediata.
+                Explora nuestro catálogo o escríbenos directamente por WhatsApp para asesoría
+                inmediata.
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-3">
