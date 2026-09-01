@@ -76,8 +76,8 @@ function Nosotros() {
             <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-emerald">
               <Sparkles className="h-3.5 w-3.5" /> Alpha Propiedades 009
             </span>
-            <h1 className="mt-5 max-w-3xl text-4xl font-bold tracking-tight md:text-6xl">
-              Conoce Alpha Propiedades 009
+            <h1 className="mt-5 max-w-4xl text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+              Conoce <span className="whitespace-nowrap">Alpha Propiedades 009</span>
             </h1>
             <p className="mt-4 max-w-2xl text-lg text-white/80">
               Tu aliado de confianza en el mercado inmobiliario de Costa Rica.
