@@ -96,22 +96,19 @@ const REASONS = [
   {
     icon: Leaf,
     title: "Estilo de Vida Pura Vida",
-    text:
-      "Biodiversidad de clase mundial, clima tropical estable todo el año y uno de los países más seguros y felices de Latinoamérica.",
+    text: "Biodiversidad de clase mundial, clima tropical estable todo el año y uno de los países más seguros y felices de Latinoamérica.",
     accent: "emerald",
   },
   {
     icon: TrendingUp,
     title: "Destino Global de Inversión",
-    text:
-      "Alta plusvalía en costas como Guanacaste y Puntarenas, junto a un crecimiento urbano premium en el GAM (Escazú, Santa Ana, Heredia).",
+    text: "Alta plusvalía en costas como Guanacaste y Puntarenas, junto a un crecimiento urbano premium en el GAM (Escazú, Santa Ana, Heredia).",
     accent: "primary",
   },
   {
     icon: Sprout,
     title: "Hub Ecológico",
-    text:
-      "País carbono-neutral con compromiso real con la sostenibilidad. Ideal para eco-proyectos, retiros wellness y desarrollos LEED.",
+    text: "País carbono-neutral con compromiso real con la sostenibilidad. Ideal para eco-proyectos, retiros wellness y desarrollos LEED.",
     accent: "emerald",
   },
 ] as const;
@@ -138,12 +135,9 @@ function ExplorarZonas() {
     setSelected((prev) => (prev === name ? null : name));
   };
 
-  const countByProvincia = (name: string) =>
-    items.filter((p) => p.provincia === name).length;
+  const countByProvincia = (name: string) => items.filter((p) => p.provincia === name).length;
 
-  const selectedProperties = selected
-    ? items.filter((p) => p.provincia === selected)
-    : [];
+  const selectedProperties = selected ? items.filter((p) => p.provincia === selected) : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -186,15 +180,34 @@ function ExplorarZonas() {
                     <stop offset="0%" stopColor="oklch(0.78 0.12 200)" stopOpacity="0.35" />
                     <stop offset="100%" stopColor="oklch(0.4 0.1 235)" stopOpacity="0" />
                   </radialGradient>
-                  <pattern id="waves" x="0" y="0" width="40" height="20" patternUnits="userSpaceOnUse">
-                    <path d="M0 10 Q10 4 20 10 T40 10" fill="none" stroke="oklch(0.9 0.04 215)" strokeOpacity="0.18" strokeWidth="1" />
+                  <pattern
+                    id="waves"
+                    x="0"
+                    y="0"
+                    width="40"
+                    height="20"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <path
+                      d="M0 10 Q10 4 20 10 T40 10"
+                      fill="none"
+                      stroke="oklch(0.9 0.04 215)"
+                      strokeOpacity="0.18"
+                      strokeWidth="1"
+                    />
                   </pattern>
                   <linearGradient id="land" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" stopColor="oklch(0.92 0.06 145)" />
                     <stop offset="100%" stopColor="oklch(0.82 0.09 140)" />
                   </linearGradient>
                   <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
-                    <feDropShadow dx="0" dy="8" stdDeviation="10" floodColor="oklch(0.18 0.06 240)" floodOpacity="0.35" />
+                    <feDropShadow
+                      dx="0"
+                      dy="8"
+                      stdDeviation="10"
+                      floodColor="oklch(0.18 0.06 240)"
+                      floodOpacity="0.35"
+                    />
                   </filter>
                 </defs>
 
@@ -210,7 +223,6 @@ function ExplorarZonas() {
                   strokeWidth={1.8}
                   filter="url(#softShadow)"
                 />
-
 
                 {/* Provinces */}
                 {SHAPES.map((s) => {
@@ -269,7 +281,13 @@ function ExplorarZonas() {
                 <g transform="translate(635,55)" className="pointer-events-none">
                   <circle r="18" fill="oklch(0.99 0.005 240)" stroke="oklch(0.65 0.02 230)" />
                   <path d="M0,-12 L3,0 L0,12 L-3,0 Z" fill="oklch(0.28 0.05 230)" />
-                  <text y="-22" textAnchor="middle" style={{ fontSize: 9, fontWeight: 700, fill: "oklch(0.28 0.05 230)" }}>N</text>
+                  <text
+                    y="-22"
+                    textAnchor="middle"
+                    style={{ fontSize: 9, fontWeight: 700, fill: "oklch(0.28 0.05 230)" }}
+                  >
+                    N
+                  </text>
                 </g>
               </svg>
 
@@ -278,7 +296,8 @@ function ExplorarZonas() {
                   className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-full bg-foreground px-3 py-1.5 text-xs font-semibold text-background shadow-lg"
                   style={{ left: tooltip.x, top: tooltip.y }}
                 >
-                  {hovered} · {countByProvincia(hovered)} {countByProvincia(hovered) === 1 ? "propiedad" : "propiedades"}
+                  {hovered} · {countByProvincia(hovered)}{" "}
+                  {countByProvincia(hovered) === 1 ? "propiedad" : "propiedades"}
                 </div>
               )}
             </div>
@@ -320,8 +339,8 @@ function ExplorarZonas() {
                       isSelected
                         ? "border-emerald bg-emerald/10 ring-2 ring-emerald/30"
                         : active
-                        ? "border-emerald bg-emerald/10"
-                        : "border-border hover:border-emerald/40 hover:bg-muted"
+                          ? "border-emerald bg-emerald/10"
+                          : "border-border hover:border-emerald/40 hover:bg-muted"
                     }`}
                   >
                     <span className="flex items-center gap-3">
@@ -339,7 +358,9 @@ function ExplorarZonas() {
                         </span>
                       </span>
                     </span>
-                    <span className={`text-xs font-semibold text-emerald transition-opacity ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+                    <span
+                      className={`text-xs font-semibold text-emerald transition-opacity ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                    >
                       {isSelected ? "Activa" : "Ver →"}
                     </span>
                   </button>
@@ -362,7 +383,9 @@ function ExplorarZonas() {
                   Propiedades en <span className="text-emerald">{selected}</span>
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {selectedProperties.length} {selectedProperties.length === 1 ? "resultado" : "resultados"} disponibles en esta zona.
+                  {selectedProperties.length}{" "}
+                  {selectedProperties.length === 1 ? "resultado" : "resultados"} disponibles en esta
+                  zona.
                 </p>
               </div>
               <Link
@@ -376,8 +399,12 @@ function ExplorarZonas() {
 
             {selectedProperties.length === 0 ? (
               <div className="mt-6 rounded-3xl border border-dashed border-border bg-card/50 p-12 text-center">
-                <p className="text-sm font-semibold text-foreground">Aún no hay propiedades listadas en {selected}.</p>
-                <p className="mt-1 text-xs text-muted-foreground">Estamos ampliando nuestro inventario en esta zona.</p>
+                <p className="text-sm font-semibold text-foreground">
+                  Aún no hay propiedades listadas en {selected}.
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Estamos ampliando nuestro inventario en esta zona.
+                </p>
               </div>
             ) : (
               <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
@@ -406,6 +433,34 @@ function ExplorarZonas() {
             </p>
           </div>
 
+          {/* Galería de imágenes destacadas (Ciudad vs Costa) */}
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <div className="group relative overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-soft)]">
+              <img
+                src="/explorar-01.jpg"
+                alt="Desarrollo Urbano en Costa Rica"
+                className="h-60 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+              <span className="absolute bottom-4 left-5 text-sm font-medium text-white">
+                Desarrollo Urbano & Valle Central
+              </span>
+            </div>
+
+            <div className="group relative overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-soft)]">
+              <img
+                src="/explorar-02.jpg"
+                alt="Estilo de Vida Costero en Costa Rica"
+                className="h-60 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+              <span className="absolute bottom-4 left-5 text-sm font-medium text-white">
+                Paraíso Costero & Sostenibilidad
+              </span>
+            </div>
+          </div>
+
+          {/* Tarjetas de razones */}
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {REASONS.map(({ icon: Icon, title, text, accent }) => (
               <article
