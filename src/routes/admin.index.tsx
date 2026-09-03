@@ -258,7 +258,7 @@ function AdminDashboard() {
       province: form.provincia,
       city: form.canton,
       bedrooms: Number(form.beds) || 0,
-      bathrooms: Number(form.baths) || 0,
+      bathrooms: parseFloat(String(form.baths).replace(",", ".")) || 0,
       parking: Number(form.parking) || 0,
       sqm: Number(form.areaNum) || 0, // 👈 M² de construcción (Aplica a Venta y Alquiler)
       lot_sqm: form.type === "Venta" ? Number(form.lotSqm) || null : null, // 👈 M² de lote (Solo Venta)
