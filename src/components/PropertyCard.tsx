@@ -1,4 +1,4 @@
-import { Heart, BedDouble, Bath, Maximize2, MapPin, Lock, Video } from "lucide-react";
+import { BedDouble, Bath, Maximize2, MapPin, Lock, Video } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 export type RentalStatus = "Disponible" | "Alquilada";
@@ -72,12 +72,6 @@ export function PropertyCard({ property }: { property: Property }) {
             </span>
           )}
         </div>
-        <button
-          aria-label="Guardar favorito"
-          className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full bg-card/95 text-foreground backdrop-blur transition-colors hover:bg-card hover:text-emerald"
-        >
-          <Heart className="h-4 w-4" />
-        </button>
       </div>
 
       <div className="p-5">
